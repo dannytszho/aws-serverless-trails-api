@@ -1,7 +1,7 @@
 org: dannytszho
 app: aws-serverless-trails-api
 service: aws-serverless-trails-api
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -9,13 +9,13 @@ provider:
   iam:
     role:
       statements:
-        - Effect: 'Allow'
+        - Effect: "Allow"
           Action:
-            - 'dynamodb:PutItem'
-            - 'dynamodb:Get*'
-            - 'dynamodb:Scan*'
-            - 'dynamodb:UpdateItem'
-            - 'dynamodb:DeleteItem'
+            - "dynamodb:PutItem"
+            - "dynamodb:Get*"
+            - "dynamodb:Scan*"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:DeleteItem"
           Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-trailsTable-${sls:stage}
   environment:
     DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
@@ -28,7 +28,7 @@ functions:
           path: /
           method: get
   createCustomer:
-    handler: createCustomer.createCustomer
+    handler: createTrail.createTrail
     events:
       - httpApi:
           path: /
@@ -47,3 +47,6 @@ resources:
           - AttributeName: primary_key
             KeyType: HASH
         TableName: ${self:service}-trailsTable-${sls:stage}
+
+plugins:
+  - serverless-plugin-typescript
