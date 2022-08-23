@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
  
 module.exports.getCustomers = async (event) => {
   const scanParams = {
-    TableName: process.env.DYNAMODB_CUSTOMER_TABLE,
+    TableName: process.env.DYNAMODB_TRAILS_TABLE,
   };
  
   const dynamodb = new AWS.DynamoDB.DocumentClient();

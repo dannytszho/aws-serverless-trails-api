@@ -16,9 +16,9 @@ provider:
             - 'dynamodb:Scan*'
             - 'dynamodb:UpdateItem'
             - 'dynamodb:DeleteItem'
-          Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-customerTable-${sls:stage}
+          Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-trailsTable-${sls:stage}
   environment:
-    DYNAMODB_CUSTOMER_TABLE: ${self:service}-customerTable-${sls:stage}
+    DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
 
 functions:
   getCustomers:
@@ -46,4 +46,4 @@ resources:
         KeySchema:
           - AttributeName: primary_key
             KeyType: HASH
-        TableName: ${self:service}-customerTable-${sls:stage}
+        TableName: ${self:service}-trailsTable-${sls:stage}
