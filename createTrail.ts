@@ -8,7 +8,7 @@ import {
 import { PutItemInput } from "aws-sdk/clients/dynamodb";
 import { v4 } from "uuid";
 
-interface PutItemInputProps {
+export interface PutItemInputProps {
   TableName: string;
   Item: {
     primary_key: string;

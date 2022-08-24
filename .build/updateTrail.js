@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,54 +47,46 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTrails = void 0;
+exports.updateTrail = void 0;
 var AWS = require("aws-sdk");
-var getTrails = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var scanParams, dynamodb, result, _a, _b;
-    var _c, _d;
-    return __generator(this, function (_e) {
-        switch (_e.label) {
+var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, scanParams, dynamoDb, result, timestamp, trail, putParams;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
+                id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
                 scanParams = {
                     TableName: process.env.DYNAMODB_TRAILS_TABLE,
+                    Key: {
+                        primary_key: id,
+                    },
                 };
-                dynamodb = new AWS.DynamoDB.DocumentClient();
-                return [4 /*yield*/, dynamodb.scan(scanParams).promise()];
+                dynamoDb = new AWS.DynamoDB.DocumentClient();
+                return [4 /*yield*/, dynamoDb.get(scanParams).promise()];
             case 1:
-                result = _e.sent();
-                if (result.Count === 0) {
+                result = _b.sent();
+                if (!result.Item) {
                     return [2 /*return*/, {
                             statusCode: 404,
                             body: JSON.stringify({ error: "not found" }),
                         }];
                 }
-                _c = {
-                    statusCode: 200
+                timestamp = new Date().getTime();
+                trail = JSON.parse(event.body);
+                putParams = {
+                    TableName: process.env.DYNAMODB_TRAILS_TABLE,
+                    Item: __assign({ primary_key: id, updatedAt: timestamp }, trail),
                 };
-                _b = (_a = JSON).stringify;
-                _d = {
-                    total: result.Count
-                };
-                return [4 /*yield*/, result.Items.map(function (trail) {
-                        return {
-                            trailID: trail.primary_key,
-                            name: trail.name,
-                            length: trail.length,
-                            elevation: trail.elevation,
-                            duration: trail.duration,
-                            difficulty: trail.difficulty,
-                            rating: trail.rating,
-                            url: trail.url,
-                            imageUrl: trail.imageUrl,
-                            createdAt: trail.createdAt,
-                            updatedAt: trail.updatedAt,
-                        };
-                    })];
-            case 2: return [2 /*return*/, (_c.body = _b.apply(_a, [(_d.items = _e.sent(),
-                        _d)]),
-                    _c)];
+                return [4 /*yield*/, dynamoDb.put(putParams).promise()];
+            case 2:
+                _b.sent();
+                return [2 /*return*/, {
+                        statusCode: 200,
+                        body: JSON.stringify(trail),
+                    }];
         }
     });
 }); };
-exports.getTrails = getTrails;
-//# sourceMappingURL=getTrails.js.map
+exports.updateTrail = updateTrail;
+//# sourceMappingURL=updateTrail.js.map

@@ -6,7 +6,9 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 
-export const getTrail = async (
+import { PutItemInputProps } from "./createTrail";
+
+export const updateTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
@@ -19,6 +21,7 @@ export const getTrail = async (
   };
 
   const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
   const result = await dynamoDb.get(scanParams).promise();
 
   if (!result.Item) {
@@ -27,9 +30,20 @@ export const getTrail = async (
       body: JSON.stringify({ error: "not found" }),
     };
   }
+  const timestamp = new Date().getTime();
+  const trail = JSON.parse(event.body!);
+  const putParams: PutItemInputProps = {
+    TableName: process.env.DYNAMODB_TRAILS_TABLE!,
+    Item: {
+      primary_key: id,
+      updatedAt: timestamp,
+      ...trail,
+    },
+  };
+  await dynamoDb.put(putParams).promise();
 
   return {
     statusCode: 200,
-    body: JSON.stringify(result.Item),
+    body: JSON.stringify(trail),
   };
 };

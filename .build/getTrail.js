@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTrail = void 0;
 var AWS = require("aws-sdk");
 var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, scanParams, dynamodb, result;
+    var id, scanParams, dynamoDb, result;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -51,13 +51,14 @@ var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, funct
                         primary_key: id,
                     },
                 };
-                dynamodb = new AWS.DynamoDB.DocumentClient();
-                return [4 /*yield*/, dynamodb.get(scanParams).promise()];
+                dynamoDb = new AWS.DynamoDB.DocumentClient();
+                return [4 /*yield*/, dynamoDb.get(scanParams).promise()];
             case 1:
                 result = _b.sent();
                 if (!result.Item) {
                     return [2 /*return*/, {
                             statusCode: 404,
+                            body: JSON.stringify({ error: "not found" }),
                         }];
                 }
                 return [2 /*return*/, {

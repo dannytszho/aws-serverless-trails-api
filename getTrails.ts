@@ -1,7 +1,14 @@
 "use strict";
 import * as AWS from "aws-sdk";
+import {
+  APIGatewayProxyHandler,
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+} from "aws-lambda";
 
-export const getTrails = async (event) => {
+export const getTrails = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   const scanParams = {
     TableName: process.env.DYNAMODB_TRAILS_TABLE!,
   };
@@ -12,6 +19,7 @@ export const getTrails = async (event) => {
   if (result.Count === 0) {
     return {
       statusCode: 404,
+      body: JSON.stringify({ error: "not found" }),
     };
   }
 
@@ -23,13 +31,15 @@ export const getTrails = async (event) => {
         return {
           trailID: trail.primary_key,
           name: trail.name,
-          length: trail.len,
+          length: trail.length,
           elevation: trail.elevation,
           duration: trail.duration,
           difficulty: trail.difficulty,
           rating: trail.rating,
           url: trail.url,
           imageUrl: trail.imageUrl,
+          createdAt: trail.createdAt,
+          updatedAt: trail.updatedAt,
         };
       }),
     }),
