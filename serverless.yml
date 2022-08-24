@@ -40,7 +40,7 @@ functions:
           path: /
           method: post
   updateTrail:
-    handler: updateTrail.updateTrail
+    handler: src/handlers.updateTrail
     events:
       - httpApi:
           path: /{id}

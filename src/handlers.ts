@@ -61,3 +61,41 @@ export const getTrailsList: APIGatewayProxyHandler = async (
     body: JSON.stringify(result.Items),
   };
 };
+
+export const updateTrail: APIGatewayProxyHandler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  const id = event.pathParameters?.id;
+
+  const result = await dynamoDb
+    .get({
+      TableName: process.env.DYNAMODB_TRAILS_TABLE!,
+      Key: {
+        primary_key: id,
+      },
+    })
+    .promise();
+
+  if (!result.Item) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: "not found" }),
+    };
+  }
+  const timestamp = new Date().getTime();
+  const trail = JSON.parse(event.body!);
+  const putParams = {
+    TableName: process.env.DYNAMODB_TRAILS_TABLE!,
+    Item: {
+      primary_key: id,
+      updatedAt: timestamp,
+      ...trail,
+    },
+  };
+  await dynamoDb.put(putParams).promise();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(trail),
+  };
+};
