@@ -21,18 +21,29 @@ provider:
     DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
 
 functions:
-  getCustomers:
-    handler: getCustomers.getCustomers
+  getTrails:
+    handler: getTrails.getTrails
     events:
       - httpApi:
           path: /
           method: get
-  createCustomer:
+  getTrail:
+    handler: getTrail.getTrail
+    events:
+      - httpApi:
+          path: /{id}
+          method: get
+  createTrail:
     handler: createTrail.createTrail
     events:
       - httpApi:
           path: /
           method: post
+  # deleteTrail:
+  #   handler: deleteTrail.deleteTrail
+  #   events:
+  #     - httpApi:
+  #         path:
 
 resources:
   Resources:

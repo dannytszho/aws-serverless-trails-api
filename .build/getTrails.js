@@ -36,42 +36,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTrail = void 0;
+exports.getTrails = void 0;
 var AWS = require("aws-sdk");
-var uuid_1 = require("uuid");
-var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var timestamp, trail, dynamoDb, putParams;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+var getTrails = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var scanParams, dynamodb, result, _a, _b;
+    var _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
-                timestamp = new Date().getTime();
-                trail = JSON.parse(event.body);
-                dynamoDb = new AWS.DynamoDB.DocumentClient();
-                putParams = {
+                scanParams = {
                     TableName: process.env.DYNAMODB_TRAILS_TABLE,
-                    Item: {
-                        primary_key: (0, uuid_1.v4)(),
-                        name: trail.name,
-                        length: trail.len,
-                        elevation: trail.elevation,
-                        duration: trail.duration,
-                        difficulty: trail.difficulty,
-                        rating: trail.rating,
-                        url: trail.url,
-                        imageUrl: trail.imageUrl,
-                        createdAt: timestamp,
-                        updatedAt: timestamp,
-                    },
                 };
-                return [4 /*yield*/, dynamoDb.put(putParams).promise()];
+                dynamodb = new AWS.DynamoDB.DocumentClient();
+                return [4 /*yield*/, dynamodb.scan(scanParams).promise()];
             case 1:
-                _a.sent();
-                return [2 /*return*/, {
-                        statusCode: 201,
-                        body: JSON.stringify(trail),
-                    }];
+                result = _e.sent();
+                if (result.Count === 0) {
+                    return [2 /*return*/, {
+                            statusCode: 404,
+                        }];
+                }
+                _c = {
+                    statusCode: 200
+                };
+                _b = (_a = JSON).stringify;
+                _d = {
+                    total: result.Count
+                };
+                return [4 /*yield*/, result.Items.map(function (trail) {
+                        return {
+                            trailID: trail.primary_key,
+                            name: trail.name,
+                            length: trail.len,
+                            elevation: trail.elevation,
+                            duration: trail.duration,
+                            difficulty: trail.difficulty,
+                            rating: trail.rating,
+                            url: trail.url,
+                            imageUrl: trail.imageUrl,
+                        };
+                    })];
+            case 2: return [2 /*return*/, (_c.body = _b.apply(_a, [(_d.items = _e.sent(),
+                        _d)]),
+                    _c)];
         }
     });
 }); };
-exports.createTrail = createTrail;
-//# sourceMappingURL=createTrail.js.map
+exports.getTrails = getTrails;
+//# sourceMappingURL=getTrails.js.map

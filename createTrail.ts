@@ -6,26 +6,45 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 import { PutItemInput } from "aws-sdk/clients/dynamodb";
+import { v4 } from "uuid";
 
-module.exports.createTrail = async (
+interface PutItemInputProps {
+  TableName: string;
+  Item: {
+    primary_key: string;
+    name: string;
+    length: string;
+    elevation: string;
+    duration: string;
+    difficulty: string;
+    rating: string;
+    url: string;
+    imageUrl: string;
+    createdAt: number;
+    updatedAt: number;
+  };
+}
+
+export const createTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const timestamp = new Date().getTime().toString();
-  const trail = JSON.parse(event.body!);
+  const timestamp = new Date().getTime();
+  const trail = JSON.parse(event.body as string);
   const dynamoDb = new AWS.DynamoDB.DocumentClient();
-  const putParams: PutItemInput = {
+  const putParams: PutItemInputProps = {
     TableName: process.env.DYNAMODB_TRAILS_TABLE!,
     Item: {
-      primary_key: trail.name,
-      length: trail.length,
+      primary_key: v4(),
+      name: trail.name,
+      length: trail.len,
       elevation: trail.elevation,
       duration: trail.duration,
       difficulty: trail.difficulty,
       rating: trail.rating,
       url: trail.url,
       imageUrl: trail.imageUrl,
-      // createdAt: trail.timestamp,
-      // updatedAt: timestamp
+      createdAt: timestamp,
+      updatedAt: timestamp,
     },
   };
   await dynamoDb.put(putParams).promise();
