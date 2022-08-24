@@ -6,7 +6,7 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 
-export const getTrail = async (
+export const getTrail: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;

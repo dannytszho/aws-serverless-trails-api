@@ -36,14 +36,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTrails = void 0;
+exports.getTrailsList = exports.createTrail = void 0;
 var AWS = require("aws-sdk");
-var dynamodb = new AWS.DynamoDB.DocumentClient();
-var getTrails = function (_event) { return __awaiter(void 0, void 0, void 0, function () {
+var uuid_1 = require("uuid");
+var dynamoDb = new AWS.DynamoDB.DocumentClient();
+var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var timestamp, trail;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                timestamp = new Date().getTime();
+                trail = JSON.parse(event.body);
+                return [4 /*yield*/, dynamoDb
+                        .put({
+                        TableName: process.env.DYNAMODB_TRAILS_TABLE,
+                        Item: {
+                            primary_key: (0, uuid_1.v4)(),
+                            name: trail.name,
+                            length: trail.length,
+                            elevation: trail.elevation,
+                            duration: trail.duration,
+                            difficulty: trail.difficulty,
+                            rating: trail.rating,
+                            url: trail.url,
+                            imageUrl: trail.imageUrl,
+                            createdAt: timestamp,
+                            updatedAt: timestamp,
+                        },
+                    })
+                        .promise()];
+            case 1:
+                _a.sent();
+                return [2 /*return*/, {
+                        statusCode: 201,
+                        body: JSON.stringify(trail),
+                    }];
+        }
+    });
+}); };
+exports.createTrail = createTrail;
+var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, dynamodb
+            case 0: return [4 /*yield*/, dynamoDb
                     .scan({
                     TableName: process.env.DYNAMODB_TRAILS_TABLE,
                 })
@@ -63,5 +99,5 @@ var getTrails = function (_event) { return __awaiter(void 0, void 0, void 0, fun
         }
     });
 }); };
-exports.getTrails = getTrails;
-//# sourceMappingURL=getTrails.js.map
+exports.getTrailsList = getTrailsList;
+//# sourceMappingURL=handlers.js.map

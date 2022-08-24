@@ -8,7 +8,7 @@ import {
 
 import { PutItemInputProps } from "./createTrail";
 
-export const updateTrail = async (
+export const updateTrail: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
