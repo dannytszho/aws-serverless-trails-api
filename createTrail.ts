@@ -36,7 +36,7 @@ export const createTrail = async (
     Item: {
       primary_key: v4(),
       name: trail.name,
-      length: trail.len,
+      length: trail.length,
       elevation: trail.elevation,
       duration: trail.duration,
       difficulty: trail.difficulty,

@@ -25,23 +25,22 @@ export const getTrails = async (
 
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      total: result.Count,
-      items: await result.Items!.map((trail) => {
-        return {
-          trailID: trail.primary_key,
-          name: trail.name,
-          length: trail.length,
-          elevation: trail.elevation,
-          duration: trail.duration,
-          difficulty: trail.difficulty,
-          rating: trail.rating,
-          url: trail.url,
-          imageUrl: trail.imageUrl,
-          createdAt: trail.createdAt,
-          updatedAt: trail.updatedAt,
-        };
-      }),
-    }),
+    body: JSON.stringify(result.Items),
+    // total: result.Count,
+    // items: await result.Items!.map((trail) => {
+    //   return {
+    //     trailID: trail.primary_key,
+    //     name: trail.name,
+    //     length: trail.length,
+    //     elevation: trail.elevation,
+    //     duration: trail.duration,
+    //     difficulty: trail.difficulty,
+    //     rating: trail.rating,
+    //     url: trail.url,
+    //     imageUrl: trail.imageUrl,
+    //     createdAt: trail.createdAt,
+    //     updatedAt: trail.updatedAt,
+    //   };
+    // }),
   };
 };

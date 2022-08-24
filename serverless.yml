@@ -45,11 +45,12 @@ functions:
       - httpApi:
           path: /{id}
           method: put
-  # deleteTrail:
-  #   handler: deleteTrail.deleteTrail
-  #   events:
-  #     - httpApi:
-  #         path:
+  deleteTrail:
+    handler: deleteTrail.deleteTrail
+    events:
+      - httpApi:
+          path: /{id}
+          method: delete
 
 resources:
   Resources:
