@@ -1,7 +1,7 @@
 org: dannytszho
 app: aws-serverless-trails-api
 service: aws-serverless-trails-api
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -9,30 +9,48 @@ provider:
   iam:
     role:
       statements:
-        - Effect: 'Allow'
+        - Effect: "Allow"
           Action:
-            - 'dynamodb:PutItem'
-            - 'dynamodb:Get*'
-            - 'dynamodb:Scan*'
-            - 'dynamodb:UpdateItem'
-            - 'dynamodb:DeleteItem'
-          Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-customerTable-${sls:stage}
+            - "dynamodb:PutItem"
+            - "dynamodb:Get*"
+            - "dynamodb:Scan*"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:DeleteItem"
+          Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-trailsTable-${sls:stage}
   environment:
-    DYNAMODB_CUSTOMER_TABLE: ${self:service}-customerTable-${sls:stage}
+    DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
 
 functions:
-  getCustomers:
-    handler: getCustomers.getCustomers
+  getTrailsList:
+    handler: src/handlers.getTrailsList
     events:
       - httpApi:
           path: /
           method: get
-  createCustomer:
-    handler: createCustomer.createCustomer
+  getTrail:
+    handler: src/handlers.getTrail
+    events:
+      - httpApi:
+          path: /{id}
+          method: get
+  createTrail:
+    handler: src/handlers.createTrail
     events:
       - httpApi:
           path: /
           method: post
+  updateTrail:
+    handler: src/handlers.updateTrail
+    events:
+      - httpApi:
+          path: /{id}
+          method: put
+  deleteTrail:
+    handler: src/handlers.deleteTrail
+    events:
+      - httpApi:
+          path: /{id}
+          method: delete
 
 resources:
   Resources:
@@ -46,4 +64,8 @@ resources:
         KeySchema:
           - AttributeName: primary_key
             KeyType: HASH
-        TableName: ${self:service}-customerTable-${sls:stage}
+        TableName: ${self:service}-trailsTable-${sls:stage}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
