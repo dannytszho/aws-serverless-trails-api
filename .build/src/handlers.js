@@ -67,11 +67,15 @@ var AWS = require("aws-sdk");
 var uuid_1 = require("uuid");
 var dynamoDb = new AWS.DynamoDB.DocumentClient();
 var tableName = process.env.DYNAMODB_TRAILS_TABLE;
+var headers = {
+    "content-type": "application/json",
+};
 var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var timestamp, trail;
+    var timestamp, trail, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 2, , 3]);
                 timestamp = new Date().getTime();
                 trail = JSON.parse(event.body);
                 return [4 /*yield*/, dynamoDb
@@ -96,8 +100,13 @@ var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                 _a.sent();
                 return [2 /*return*/, {
                         statusCode: 201,
+                        headers: headers,
                         body: JSON.stringify(trail),
                     }];
+            case 2:
+                e_1 = _a.sent();
+                return [2 /*return*/, handleError(e_1)];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
@@ -121,6 +130,7 @@ var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0,
                 }
                 return [2 /*return*/, {
                         statusCode: 200,
+                        headers: headers,
                         body: JSON.stringify(res.Items),
                     }];
         }
@@ -159,16 +169,24 @@ var fetchTrailById = function (id) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var handleError = function (e) {
+    if (e instanceof SyntaxError) {
+        return {
+            statusCode: 400,
+            headers: headers,
+            body: "Invalid request body format: \"".concat(e.message, "\""),
+        };
+    }
     if (e instanceof HttpError) {
         return {
             statusCode: e.statusCode,
+            headers: headers,
             body: e.message,
         };
     }
     throw e;
 };
 var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, res, e_1;
+    var id, res, e_2;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -180,18 +198,19 @@ var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, funct
                 res = _b.sent();
                 return [2 /*return*/, {
                         statusCode: 200,
+                        headers: headers,
                         body: JSON.stringify(res),
                     }];
             case 2:
-                e_1 = _b.sent();
-                return [2 /*return*/, handleError(e_1)];
+                e_2 = _b.sent();
+                return [2 /*return*/, handleError(e_2)];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getTrail = getTrail;
 var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, timestamp, trail, e_2;
+    var id, timestamp, trail, e_3;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -213,18 +232,19 @@ var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                 _b.sent();
                 return [2 /*return*/, {
                         statusCode: 200,
+                        headers: headers,
                         body: JSON.stringify(trail),
                     }];
             case 3:
-                e_2 = _b.sent();
-                return [2 /*return*/, handleError(e_2)];
+                e_3 = _b.sent();
+                return [2 /*return*/, handleError(e_3)];
             case 4: return [2 /*return*/];
         }
     });
 }); };
 exports.updateTrail = updateTrail;
 var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, e_3;
+    var id, e_4;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -249,8 +269,8 @@ var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                         body: "Data successfully deleted",
                     }];
             case 3:
-                e_3 = _b.sent();
-                return [2 /*return*/, handleError(e_3)];
+                e_4 = _b.sent();
+                return [2 /*return*/, handleError(e_4)];
             case 4: return [2 /*return*/];
         }
     });

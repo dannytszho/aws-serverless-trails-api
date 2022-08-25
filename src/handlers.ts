@@ -9,36 +9,44 @@ import { v4 } from "uuid";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.DYNAMODB_TRAILS_TABLE;
+const headers = {
+  "content-type": "application/json",
+};
 
 export const createTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const timestamp = new Date().getTime();
-  const trail = JSON.parse(event.body as string);
+  try {
+    const timestamp = new Date().getTime();
+    const trail = JSON.parse(event.body as string);
 
-  await dynamoDb
-    .put({
-      TableName: tableName!,
-      Item: {
-        primary_key: v4(),
-        name: trail.name,
-        length: trail.length,
-        elevation: trail.elevation,
-        duration: trail.duration,
-        difficulty: trail.difficulty,
-        rating: trail.rating,
-        url: trail.url,
-        imageUrl: trail.imageUrl,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      },
-    })
-    .promise();
+    await dynamoDb
+      .put({
+        TableName: tableName!,
+        Item: {
+          primary_key: v4(),
+          name: trail.name,
+          length: trail.length,
+          elevation: trail.elevation,
+          duration: trail.duration,
+          difficulty: trail.difficulty,
+          rating: trail.rating,
+          url: trail.url,
+          imageUrl: trail.imageUrl,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        },
+      })
+      .promise();
 
-  return {
-    statusCode: 201,
-    body: JSON.stringify(trail),
-  };
+    return {
+      statusCode: 201,
+      headers,
+      body: JSON.stringify(trail),
+    };
+  } catch (e) {
+    return handleError(e);
+  }
 };
 
 export const getTrailsList: APIGatewayProxyHandler = async (
@@ -59,6 +67,7 @@ export const getTrailsList: APIGatewayProxyHandler = async (
 
   return {
     statusCode: 200,
+    headers,
     body: JSON.stringify(res.Items),
   };
 };
@@ -87,9 +96,17 @@ const fetchTrailById = async (id: string) => {
 };
 
 const handleError = (e: unknown) => {
+  if (e instanceof SyntaxError) {
+    return {
+      statusCode: 400,
+      headers,
+      body: `Invalid request body format: "${e.message}"`,
+    };
+  }
   if (e instanceof HttpError) {
     return {
       statusCode: e.statusCode,
+      headers,
       body: e.message,
     };
   }
@@ -107,6 +124,7 @@ export const getTrail: APIGatewayProxyHandler = async (
 
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify(res),
     };
   } catch (e) {
@@ -138,6 +156,7 @@ export const updateTrail: APIGatewayProxyHandler = async (
 
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify(trail),
     };
   } catch (e) {
