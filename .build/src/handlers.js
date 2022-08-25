@@ -173,7 +173,9 @@ var handleError = function (e) {
         return {
             statusCode: 400,
             headers: headers,
-            body: "Invalid request body format: \"".concat(e.message, "\""),
+            body: JSON.stringify({
+                error: "Invalid request body format: \"".concat(e.message, "\""),
+            }),
         };
     }
     if (e instanceof HttpError) {
@@ -266,7 +268,7 @@ var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                 _b.sent();
                 return [2 /*return*/, {
                         statusCode: 204,
-                        body: "Data successfully deleted",
+                        body: "",
                     }];
             case 3:
                 e_4 = _b.sent();

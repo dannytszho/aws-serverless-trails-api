@@ -100,7 +100,9 @@ const handleError = (e: unknown) => {
     return {
       statusCode: 400,
       headers,
-      body: `Invalid request body format: "${e.message}"`,
+      body: JSON.stringify({
+        error: `Invalid request body format: "${e.message}"`,
+      }),
     };
   }
   if (e instanceof HttpError) {
@@ -183,7 +185,7 @@ export const deleteTrail: APIGatewayProxyHandler = async (
 
     return {
       statusCode: 204,
-      body: "Data successfully deleted",
+      body: "",
     };
   } catch (e) {
     return handleError(e);
