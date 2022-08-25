@@ -1,4 +1,19 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -88,7 +103,7 @@ var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.createTrail = createTrail;
 var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var res;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, dynamoDb
@@ -97,8 +112,8 @@ var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0,
                 })
                     .promise()];
             case 1:
-                result = _a.sent();
-                if (result.Count === 0) {
+                res = _a.sent();
+                if (res.Count === 0) {
                     return [2 /*return*/, {
                             statusCode: 404,
                             body: JSON.stringify({ error: "not found" }),
@@ -106,66 +121,86 @@ var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0,
                 }
                 return [2 /*return*/, {
                         statusCode: 200,
-                        body: JSON.stringify(result.Items),
+                        body: JSON.stringify(res.Items),
                     }];
         }
     });
 }); };
 exports.getTrailsList = getTrailsList;
+var HttpError = /** @class */ (function (_super) {
+    __extends(HttpError, _super);
+    function HttpError(statusCode, body) {
+        if (body === void 0) { body = {}; }
+        var _this = _super.call(this, JSON.stringify(body)) || this;
+        _this.statusCode = statusCode;
+        return _this;
+    }
+    return HttpError;
+}(Error));
+var fetchTrailById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    var res;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, dynamoDb
+                    .get({
+                    TableName: tableName,
+                    Key: {
+                        primary_key: id,
+                    },
+                })
+                    .promise()];
+            case 1:
+                res = _a.sent();
+                if (!res.Item) {
+                    throw new HttpError(404, { error: "not found" });
+                }
+                return [2 /*return*/, res.Item];
+        }
+    });
+}); };
+var handleError = function (e) {
+    if (e instanceof HttpError) {
+        return {
+            statusCode: e.statusCode,
+            body: e.message,
+        };
+    }
+    throw e;
+};
 var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, res;
+    var id, res, e_1;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
+                _b.trys.push([0, 2, , 3]);
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
-                return [4 /*yield*/, dynamoDb
-                        .get({
-                        TableName: tableName,
-                        Key: {
-                            primary_key: id,
-                        },
-                    })
-                        .promise()];
+                return [4 /*yield*/, fetchTrailById(id)];
             case 1:
                 res = _b.sent();
-                if (!res.Item) {
-                    return [2 /*return*/, {
-                            statusCode: 404,
-                            body: JSON.stringify({ error: "not found" }),
-                        }];
-                }
                 return [2 /*return*/, {
                         statusCode: 200,
-                        body: JSON.stringify(res.Item),
+                        body: JSON.stringify(res),
                     }];
+            case 2:
+                e_1 = _b.sent();
+                return [2 /*return*/, handleError(e_1)];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getTrail = getTrail;
 var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, res, timestamp, trail;
+    var id, timestamp, trail, e_2;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
+                _b.trys.push([0, 3, , 4]);
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
-                return [4 /*yield*/, dynamoDb
-                        .get({
-                        TableName: tableName,
-                        Key: {
-                            primary_key: id,
-                        },
-                    })
-                        .promise()];
+                return [4 /*yield*/, fetchTrailById(id)];
             case 1:
-                res = _b.sent();
-                if (!res.Item) {
-                    return [2 /*return*/, {
-                            statusCode: 404,
-                            body: JSON.stringify({ error: "not found" }),
-                        }];
-                }
+                _b.sent();
                 timestamp = new Date().getTime();
                 trail = JSON.parse(event.body);
                 return [4 /*yield*/, dynamoDb
@@ -180,33 +215,25 @@ var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                         statusCode: 200,
                         body: JSON.stringify(trail),
                     }];
+            case 3:
+                e_2 = _b.sent();
+                return [2 /*return*/, handleError(e_2)];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
 exports.updateTrail = updateTrail;
 var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, res;
+    var id, e_3;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
+                _b.trys.push([0, 3, , 4]);
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
-                return [4 /*yield*/, dynamoDb
-                        .get({
-                        TableName: tableName,
-                        Key: {
-                            primary_key: id,
-                        },
-                    })
-                        .promise()];
+                return [4 /*yield*/, fetchTrailById(id)];
             case 1:
-                res = _b.sent();
-                if (!res.Item) {
-                    return [2 /*return*/, {
-                            statusCode: 404,
-                            body: JSON.stringify({ error: "not found" }),
-                        }];
-                }
+                _b.sent();
                 return [4 /*yield*/, dynamoDb
                         .delete({
                         TableName: tableName,
@@ -221,6 +248,10 @@ var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                         statusCode: 204,
                         body: "Data successfully deleted",
                     }];
+            case 3:
+                e_3 = _b.sent();
+                return [2 /*return*/, handleError(e_3)];
+            case 4: return [2 /*return*/];
         }
     });
 }); };

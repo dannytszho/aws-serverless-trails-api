@@ -44,13 +44,13 @@ export const createTrail = async (
 export const getTrailsList: APIGatewayProxyHandler = async (
   _event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const result = await dynamoDb
+  const res = await dynamoDb
     .scan({
       TableName: tableName!,
     })
     .promise();
 
-  if (result.Count === 0) {
+  if (res.Count === 0) {
     return {
       statusCode: 404,
       body: JSON.stringify({ error: "not found" }),
@@ -59,108 +59,114 @@ export const getTrailsList: APIGatewayProxyHandler = async (
 
   return {
     statusCode: 200,
-    body: JSON.stringify(result.Items),
+    body: JSON.stringify(res.Items),
   };
+};
+
+class HttpError extends Error {
+  constructor(public statusCode: number, body: Record<string, unknown> = {}) {
+    super(JSON.stringify(body));
+  }
+}
+
+const fetchTrailById = async (id: string) => {
+  const res = await dynamoDb
+    .get({
+      TableName: tableName!,
+      Key: {
+        primary_key: id,
+      },
+    })
+    .promise();
+
+  if (!res.Item) {
+    throw new HttpError(404, { error: "not found" });
+  }
+
+  return res.Item;
+};
+
+const handleError = (e: unknown) => {
+  if (e instanceof HttpError) {
+    return {
+      statusCode: e.statusCode,
+      body: e.message,
+    };
+  }
+
+  throw e;
 };
 
 export const getTrail: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const id = event.pathParameters?.id;
+  try {
+    const id = event.pathParameters?.id as string;
 
-  const res = await dynamoDb
-    .get({
-      TableName: tableName!,
-      Key: {
-        primary_key: id,
-      },
-    })
-    .promise();
+    const res = await fetchTrailById(id);
 
-  if (!res.Item) {
     return {
-      statusCode: 404,
-      body: JSON.stringify({ error: "not found" }),
+      statusCode: 200,
+      body: JSON.stringify(res),
     };
+  } catch (e) {
+    return handleError(e);
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(res.Item),
-  };
 };
 
 export const updateTrail: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const id = event.pathParameters?.id;
+  try {
+    const id = event.pathParameters?.id as string;
 
-  const res = await dynamoDb
-    .get({
-      TableName: tableName!,
-      Key: {
-        primary_key: id,
-      },
-    })
-    .promise();
+    await fetchTrailById(id);
 
-  if (!res.Item) {
+    const timestamp = new Date().getTime();
+    const trail = JSON.parse(event.body!);
+
+    await dynamoDb
+      .put({
+        TableName: tableName!,
+        Item: {
+          primary_key: id,
+          updatedAt: timestamp,
+          ...trail,
+        },
+      })
+      .promise();
+
     return {
-      statusCode: 404,
-      body: JSON.stringify({ error: "not found" }),
+      statusCode: 200,
+      body: JSON.stringify(trail),
     };
+  } catch (e) {
+    return handleError(e);
   }
-  const timestamp = new Date().getTime();
-  const trail = JSON.parse(event.body!);
-
-  await dynamoDb
-    .put({
-      TableName: tableName!,
-      Item: {
-        primary_key: id,
-        updatedAt: timestamp,
-        ...trail,
-      },
-    })
-    .promise();
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(trail),
-  };
 };
 
 export const deleteTrail: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const id = event.pathParameters?.id as string;
+  try {
+    const id = event.pathParameters?.id as string;
 
-  const res = await dynamoDb
-    .get({
-      TableName: tableName!,
-      Key: {
-        primary_key: id,
-      },
-    })
-    .promise();
+    await fetchTrailById(id);
 
-  if (!res.Item) {
+    await dynamoDb
+      .delete({
+        TableName: tableName!,
+        Key: {
+          primary_key: id,
+        },
+      })
+      .promise();
+
     return {
-      statusCode: 404,
-      body: JSON.stringify({ error: "not found" }),
+      statusCode: 204,
+      body: "Data successfully deleted",
     };
+  } catch (e) {
+    return handleError(e);
   }
-  await dynamoDb
-    .delete({
-      TableName: tableName!,
-      Key: {
-        primary_key: id,
-      },
-    })
-    .promise();
-
-  return {
-    statusCode: 204,
-    body: "Data successfully deleted",
-  };
 };
