@@ -28,7 +28,7 @@ functions:
           path: /
           method: get
   getTrail:
-    handler: getTrail.getTrail
+    handler: src/handlers.getTrail
     events:
       - httpApi:
           path: /{id}
@@ -46,7 +46,7 @@ functions:
           path: /{id}
           method: put
   deleteTrail:
-    handler: deleteTrail.deleteTrail
+    handler: src/handlers.deleteTrail
     events:
       - httpApi:
           path: /{id}

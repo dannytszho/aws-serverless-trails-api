@@ -8,6 +8,7 @@ import {
 import { v4 } from "uuid";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const tableName = process.env.DYNAMODB_TRAILS_TABLE;
 
 export const createTrail = async (
   event: APIGatewayProxyEvent
@@ -17,7 +18,7 @@ export const createTrail = async (
 
   await dynamoDb
     .put({
-      TableName: process.env.DYNAMODB_TRAILS_TABLE!,
+      TableName: tableName!,
       Item: {
         primary_key: v4(),
         name: trail.name,
@@ -45,7 +46,7 @@ export const getTrailsList: APIGatewayProxyHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const result = await dynamoDb
     .scan({
-      TableName: process.env.DYNAMODB_TRAILS_TABLE!,
+      TableName: tableName!,
     })
     .promise();
 
@@ -62,21 +63,48 @@ export const getTrailsList: APIGatewayProxyHandler = async (
   };
 };
 
-export const updateTrail: APIGatewayProxyHandler = async (
+export const getTrail: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
 
-  const result = await dynamoDb
+  const res = await dynamoDb
     .get({
-      TableName: process.env.DYNAMODB_TRAILS_TABLE!,
+      TableName: tableName!,
       Key: {
         primary_key: id,
       },
     })
     .promise();
 
-  if (!result.Item) {
+  if (!res.Item) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: "not found" }),
+    };
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(res.Item),
+  };
+};
+
+export const updateTrail: APIGatewayProxyHandler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  const id = event.pathParameters?.id;
+
+  const res = await dynamoDb
+    .get({
+      TableName: tableName!,
+      Key: {
+        primary_key: id,
+      },
+    })
+    .promise();
+
+  if (!res.Item) {
     return {
       statusCode: 404,
       body: JSON.stringify({ error: "not found" }),
@@ -84,18 +112,55 @@ export const updateTrail: APIGatewayProxyHandler = async (
   }
   const timestamp = new Date().getTime();
   const trail = JSON.parse(event.body!);
-  const putParams = {
-    TableName: process.env.DYNAMODB_TRAILS_TABLE!,
-    Item: {
-      primary_key: id,
-      updatedAt: timestamp,
-      ...trail,
-    },
-  };
-  await dynamoDb.put(putParams).promise();
+
+  await dynamoDb
+    .put({
+      TableName: tableName!,
+      Item: {
+        primary_key: id,
+        updatedAt: timestamp,
+        ...trail,
+      },
+    })
+    .promise();
 
   return {
     statusCode: 200,
     body: JSON.stringify(trail),
+  };
+};
+
+export const deleteTrail: APIGatewayProxyHandler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  const id = event.pathParameters?.id as string;
+
+  const res = await dynamoDb
+    .get({
+      TableName: tableName!,
+      Key: {
+        primary_key: id,
+      },
+    })
+    .promise();
+
+  if (!res.Item) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: "not found" }),
+    };
+  }
+  await dynamoDb
+    .delete({
+      TableName: tableName!,
+      Key: {
+        primary_key: id,
+      },
+    })
+    .promise();
+
+  return {
+    statusCode: 204,
+    body: "Data successfully deleted",
   };
 };

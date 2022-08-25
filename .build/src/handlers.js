@@ -47,10 +47,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTrail = exports.getTrailsList = exports.createTrail = void 0;
+exports.deleteTrail = exports.updateTrail = exports.getTrail = exports.getTrailsList = exports.createTrail = void 0;
 var AWS = require("aws-sdk");
 var uuid_1 = require("uuid");
 var dynamoDb = new AWS.DynamoDB.DocumentClient();
+var tableName = process.env.DYNAMODB_TRAILS_TABLE;
 var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
     var timestamp, trail;
     return __generator(this, function (_a) {
@@ -60,7 +61,7 @@ var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                 trail = JSON.parse(event.body);
                 return [4 /*yield*/, dynamoDb
                         .put({
-                        TableName: process.env.DYNAMODB_TRAILS_TABLE,
+                        TableName: tableName,
                         Item: {
                             primary_key: (0, uuid_1.v4)(),
                             name: trail.name,
@@ -92,7 +93,7 @@ var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0,
         switch (_a.label) {
             case 0: return [4 /*yield*/, dynamoDb
                     .scan({
-                    TableName: process.env.DYNAMODB_TRAILS_TABLE,
+                    TableName: tableName,
                 })
                     .promise()];
             case 1:
@@ -111,8 +112,8 @@ var getTrailsList = function (_event) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getTrailsList = getTrailsList;
-var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, result, timestamp, trail, putParams;
+var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, res;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -120,15 +121,46 @@ var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
                 return [4 /*yield*/, dynamoDb
                         .get({
-                        TableName: process.env.DYNAMODB_TRAILS_TABLE,
+                        TableName: tableName,
                         Key: {
                             primary_key: id,
                         },
                     })
                         .promise()];
             case 1:
-                result = _b.sent();
-                if (!result.Item) {
+                res = _b.sent();
+                if (!res.Item) {
+                    return [2 /*return*/, {
+                            statusCode: 404,
+                            body: JSON.stringify({ error: "not found" }),
+                        }];
+                }
+                return [2 /*return*/, {
+                        statusCode: 200,
+                        body: JSON.stringify(res.Item),
+                    }];
+        }
+    });
+}); };
+exports.getTrail = getTrail;
+var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, res, timestamp, trail;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
+                return [4 /*yield*/, dynamoDb
+                        .get({
+                        TableName: tableName,
+                        Key: {
+                            primary_key: id,
+                        },
+                    })
+                        .promise()];
+            case 1:
+                res = _b.sent();
+                if (!res.Item) {
                     return [2 /*return*/, {
                             statusCode: 404,
                             body: JSON.stringify({ error: "not found" }),
@@ -136,11 +168,12 @@ var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                 }
                 timestamp = new Date().getTime();
                 trail = JSON.parse(event.body);
-                putParams = {
-                    TableName: process.env.DYNAMODB_TRAILS_TABLE,
-                    Item: __assign({ primary_key: id, updatedAt: timestamp }, trail),
-                };
-                return [4 /*yield*/, dynamoDb.put(putParams).promise()];
+                return [4 /*yield*/, dynamoDb
+                        .put({
+                        TableName: tableName,
+                        Item: __assign({ primary_key: id, updatedAt: timestamp }, trail),
+                    })
+                        .promise()];
             case 2:
                 _b.sent();
                 return [2 /*return*/, {
@@ -151,4 +184,45 @@ var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.updateTrail = updateTrail;
+var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, res;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
+                return [4 /*yield*/, dynamoDb
+                        .get({
+                        TableName: tableName,
+                        Key: {
+                            primary_key: id,
+                        },
+                    })
+                        .promise()];
+            case 1:
+                res = _b.sent();
+                if (!res.Item) {
+                    return [2 /*return*/, {
+                            statusCode: 404,
+                            body: JSON.stringify({ error: "not found" }),
+                        }];
+                }
+                return [4 /*yield*/, dynamoDb
+                        .delete({
+                        TableName: tableName,
+                        Key: {
+                            primary_key: id,
+                        },
+                    })
+                        .promise()];
+            case 2:
+                _b.sent();
+                return [2 /*return*/, {
+                        statusCode: 204,
+                        body: "Data successfully deleted",
+                    }];
+        }
+    });
+}); };
+exports.deleteTrail = deleteTrail;
 //# sourceMappingURL=handlers.js.map
