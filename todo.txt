@@ -1,5 +1,5 @@
 1. Add Jest Unit test
     - = > 80% code coverage
 2. Set up Github action for CI/CD
-3. Set up husky on push--
+3. Set up husky on push---
 
