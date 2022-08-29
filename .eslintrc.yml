@@ -6,4 +6,5 @@ env:
 extends:
   - prettier
 parserOptions:
-  ecmaVersion: latest
+  ecmaVersion: 11,
+  sourceType: module

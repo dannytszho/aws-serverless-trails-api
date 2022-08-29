@@ -3,4 +3,5 @@
 . "$(dirname "$0")/common.sh"
 
 yarn run tsc
+yarn run lint
 yarn run pre-push
