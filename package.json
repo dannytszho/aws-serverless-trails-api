@@ -39,7 +39,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+      "prettier --write .",
       "yarn run lint"
     ]
   }
