@@ -34,7 +34,7 @@ export const createTrail = async (
           url: trail.url,
           imageUrl: trail.imageUrl,
           createdAt: timestamp,
-          updatedAt: timestamp,
+          // updatedAt: timestamp,
         },
       })
       .promise();
