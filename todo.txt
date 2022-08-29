@@ -3,3 +3,5 @@
 2. Set up Github action for CI/CD
 3. Set up husky on push
 
+"lint-staged": 
+"yarn test watchAll=false --findRelatedTests --bail"
