@@ -4,7 +4,7 @@
     "test": "jest --verbose",
     "prepare": "husky install",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src --color",
-    "pre-commit": "lint-staged",
+    "pre-push": "lint-staged",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "clean": "rm -rf node_modules"
@@ -39,7 +39,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "prettier --write .",
+      "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
       "yarn run lint"
     ]
   }
