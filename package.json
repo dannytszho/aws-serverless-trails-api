@@ -10,6 +10,7 @@
     "clean": "rm -rf node_modules"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.18.9",
     "@babel/plugin-transform-modules-commonjs": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@commitlint/cli": "^17.1.1",
