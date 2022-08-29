@@ -92,7 +92,7 @@ var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
                             url: trail.url,
                             imageUrl: trail.imageUrl,
                             createdAt: timestamp,
-                            updatedAt: timestamp,
+                            // updatedAt: timestamp,
                         },
                     })
                         .promise()];
