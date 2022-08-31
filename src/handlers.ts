@@ -18,6 +18,7 @@ export const createTrail = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const timestamp = new Date().getTime();
+    console.log(event.body);
     const trail = JSON.parse(event.body as string);
 
     await dynamoDb

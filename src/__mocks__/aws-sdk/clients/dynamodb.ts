@@ -1,16 +1,26 @@
-export const awsSdkPromiseResponse = jest
+// we can import this mock response and change it now per test
+export const awsSdkGetPromiseResponse = jest
   .fn()
-  .mockReturnValue(Promise.resolve(true));
+  .mockReturnValue(Promise.resolve({ Item: {} }));
+
+// we can import this mock response and change it now per test
+export const awsSdkPutPromiseResponse = jest
+  .fn()
+  .mockReturnValue(Promise.resolve({}));
 
 const getFn = jest
   .fn()
-  .mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
+  .mockImplementation(() => ({ promise: awsSdkGetPromiseResponse }));
 
 const putFn = jest
   .fn()
-  .mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
+  .mockImplementation(() => ({ promise: awsSdkPutPromiseResponse }));
 
-export class DocumentClient {
+class DocumentClient {
   get = getFn;
   put = putFn;
 }
+
+export const DynamoDB = {
+  DocumentClient,
+};

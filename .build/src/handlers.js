@@ -77,6 +77,7 @@ var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 timestamp = new Date().getTime();
+                console.log(event.body);
                 trail = JSON.parse(event.body);
                 return [4 /*yield*/, dynamoDb
                         .put({
