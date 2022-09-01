@@ -5,3 +5,5 @@
 
 "lint-staged": 
 "yarn test watchAll=false --findRelatedTests --bail"
+
+Read CI/CD github action

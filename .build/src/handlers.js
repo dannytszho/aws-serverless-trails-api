@@ -62,7 +62,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTrail = exports.updateTrail = exports.getTrail = exports.getTrailsList = exports.createTrail = void 0;
+exports.deleteTrail = exports.updateTrail = exports.getTrail = exports.fetchTrailById = exports.getTrailsList = exports.createTrail = void 0;
 var AWS = require("aws-sdk");
 var uuid_1 = require("uuid");
 var dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -77,7 +77,6 @@ var createTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 timestamp = new Date().getTime();
-                console.log(event.body);
                 trail = JSON.parse(event.body);
                 return [4 /*yield*/, dynamoDb
                         .put({
@@ -169,6 +168,7 @@ var fetchTrailById = function (id) { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
+exports.fetchTrailById = fetchTrailById;
 var handleError = function (e) {
     if (e instanceof SyntaxError) {
         return {
@@ -196,7 +196,7 @@ var getTrail = function (event) { return __awaiter(void 0, void 0, void 0, funct
             case 0:
                 _b.trys.push([0, 2, , 3]);
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
-                return [4 /*yield*/, fetchTrailById(id)];
+                return [4 /*yield*/, (0, exports.fetchTrailById)(id)];
             case 1:
                 res = _b.sent();
                 return [2 /*return*/, {
@@ -220,7 +220,7 @@ var updateTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
             case 0:
                 _b.trys.push([0, 3, , 4]);
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
-                return [4 /*yield*/, fetchTrailById(id)];
+                return [4 /*yield*/, (0, exports.fetchTrailById)(id)];
             case 1:
                 _b.sent();
                 timestamp = new Date().getTime();
@@ -254,7 +254,7 @@ var deleteTrail = function (event) { return __awaiter(void 0, void 0, void 0, fu
             case 0:
                 _b.trys.push([0, 3, , 4]);
                 id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
-                return [4 /*yield*/, fetchTrailById(id)];
+                return [4 /*yield*/, (0, exports.fetchTrailById)(id)];
             case 1:
                 _b.sent();
                 return [4 /*yield*/, dynamoDb
