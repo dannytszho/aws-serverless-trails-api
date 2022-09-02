@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "sls offline -s dev",
     "test": "jest --verbose",
+    "coverage": "jest --collect-coverage",
     "prepare": "husky install",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src --color",
     "pre-push": "lint-staged",

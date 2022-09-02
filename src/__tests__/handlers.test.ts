@@ -103,7 +103,15 @@ jest.mock("aws-sdk", () => {
               ),
             };
           }),
-          get: jest.fn().mock,
+          get: jest.fn().mockImplementation(() => {
+            return {
+              promise: jest
+                .fn()
+                .mockImplementation(() =>
+                  Promise.resolve({ Items: { id: "1", get: "GG" } })
+                ),
+            };
+          }),
           scan: jest.fn().mockImplementation(() => {
             return {
               promise: jest
