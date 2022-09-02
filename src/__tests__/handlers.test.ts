@@ -1,83 +1,7 @@
-// import { APIGatewayProxyEvent, Context } from "aws-lambda";
-// import { createTrail, getTrail, getTrailsList } from "../handlers";
-// import {
-//   awsSdkGetPromiseResponse,
-//   awsSdkPutPromiseResponse,
-//   DynamoDB,
-// } from "../__mocks__/aws-sdk/clients/dynamodb";
-// import * as AWS from "aws-sdk";
-
-// jest.mock("aws-sdk", () => {
-//   const mDocumentClient = {
-//     put: jest.fn(() => {
-//       return {
-//         promise: jest.fn(() => {
-//           return "hi";
-//         }),
-//       };
-//     }),
-//     scan: jest.fn(() => {
-//       return {
-//         promise: jest.fn(() => {
-//           return Promise.resolve({
-//             trailsData,
-//           });
-//         }),
-//       };
-//     }),
-//   };
-//   const mDynamoDB = { DocumentClient: jest.fn(() => mDocumentClient) };
-//   return { DynamoDB: mDynamoDB };
-// });
-// const mDynamoDb = new DynamoDB.DocumentClient();
-
-// describe("Handle create a trail request", () => {
-//   afterEach(() => {
-//     jest.resetAllMocks();
-//   });
-
-//   describe("create a trail", () => {
-//     it("should return the correct trail", async () => {
-//       let mockEvent: APIGatewayProxyEvent = {
-//         body: JSON.stringify({
-//           trailsData,
-//         }),
-//         headers: JSON.stringify({
-//           "content-type": "application/json",
-//         }),
-//       } as any;
-
-//       mDynamoDb.put.mockImplementationOnce((callback) =>
-//         callback(null, mockEvent)
-//       );
-
-//       const res = await createTrail(mockEvent);
-//       expect(res.headers).toStrictEqual({ "content-type": "application/json" });
-//       expect(res.body).toBe(
-//         JSON.stringify({
-//           trailsData,
-//         })
-//       );
-//     });
-
-//     it("should return the trailsList", async () => {
-//       let mockEvent: APIGatewayProxyEvent = {
-//         body: {},
-//         headers: {
-//           "content-type": "application/json",
-//         },
-//       } as any;
-
-//       const res = await getTrailsList(mockEvent);
-//       console.log(res);
-//     });
-//   });
-// });
-
 import * as AWS from "aws-sdk";
-import { createTrail, getTrailsList } from "../handlers";
+import { createTrail, fetchTrailById, getTrailsList } from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { resolve } from "path";
+
 const trailsData = {
   id: "1",
   name: "Angels Landing Trail",
@@ -103,15 +27,6 @@ jest.mock("aws-sdk", () => {
               ),
             };
           }),
-          get: jest.fn().mockImplementation(() => {
-            return {
-              promise: jest
-                .fn()
-                .mockImplementation(() =>
-                  Promise.resolve({ Items: { id: "1", get: "GG" } })
-                ),
-            };
-          }),
           scan: jest.fn().mockImplementation(() => {
             return {
               promise: jest
@@ -119,6 +34,15 @@ jest.mock("aws-sdk", () => {
                 .mockImplementation(() =>
                   Promise.resolve({ Items: { Hi: "bb" } })
                 ),
+            };
+          }),
+          get: jest.fn().mockImplementation(() => {
+            return {
+              promise: jest.fn().mockReturnValue(
+                Promise.resolve({
+                  Item: { test: "AA" },
+                })
+              ),
             };
           }),
         };
@@ -281,5 +205,20 @@ describe("Handle CRUD request", () => {
     expect(JSON.parse(res.body)).toStrictEqual({ Hi: "bb" });
     expect(scanMock.Items).toStrictEqual({ Hi: "bb" });
     expect(db.scan).toBeCalledTimes(1);
+  });
+
+  it("should return the specific trail", async () => {
+    const getMock = await db
+      .get({ TableName: "yoyo", Key: { primary_key: "2" } })
+      .promise();
+
+    console.log("/////////");
+    const res = await fetchTrailById("1");
+    expect(res).toEqual({ test: "AA" });
+    expect(db.get).toBeCalledWith({
+      TableName: "yoyo",
+      Key: { primary_key: "2" },
+    });
+    console.log(res);
   });
 });
