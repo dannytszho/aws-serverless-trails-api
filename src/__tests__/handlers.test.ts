@@ -1,5 +1,10 @@
 import * as AWS from "aws-sdk";
-import { createTrail, fetchTrailById, getTrailsList } from "../handlers";
+import {
+  createTrail,
+  fetchTrailById,
+  getTrail,
+  getTrailsList,
+} from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 const trailsData = {
@@ -9,6 +14,8 @@ const trailsData = {
   elevation: "1,240 ft",
   duration: "Est. 3h 9m",
 };
+
+const get: jest.Mock = jest.fn();
 
 jest.mock("aws-sdk", () => {
   return {
@@ -38,9 +45,12 @@ jest.mock("aws-sdk", () => {
           }),
           get: jest.fn().mockImplementation(() => {
             return {
-              promise: jest.fn().mockReturnValue(
+              promise: jest.fn().mockImplementation(() =>
                 Promise.resolve({
-                  Item: { test: "AA" },
+                  Item: [
+                    { id: "1", test: "AA" },
+                    { id: "2", test: "bb" },
+                  ],
                 })
               ),
             };
@@ -207,18 +217,76 @@ describe("Handle CRUD request", () => {
     expect(db.scan).toBeCalledTimes(1);
   });
 
-  it("should return the specific trail", async () => {
-    const getMock = await db
-      .get({ TableName: "yoyo", Key: { primary_key: "2" } })
-      .promise();
+  it("should return the correct trail", async () => {
+    let getTrailMockEvent: APIGatewayProxyEvent = {
+      body: "",
+      headers: {
+        "content-type": "application/json",
+        "user-agent": "PostmanRuntime/7.29.2",
+        accept: "*/*",
+        "postman-token": "6a8a8376-2b7e-4d45-b835-0f36c974514e",
+        host: "localhost:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive",
+        "content-length": "704",
+      },
+      multiValueHeaders: {
+        "content-type": ["application/json"],
+        "user-agent": ["PostmanRuntime/7.29.2"],
+        accept: ["*/*"],
+        "postman-token": ["6a8a8376-2b7e-4d45-b835-0f36c974514e"],
+        host: ["localhost:3000"],
+        "accept-encoding": ["gzip, deflate, br"],
+        connection: ["keep-alive"],
+        "content-length": ["704"],
+      },
 
-    console.log("/////////");
-    const res = await fetchTrailById("1");
-    expect(res).toEqual({ test: "AA" });
-    expect(db.get).toBeCalledWith({
-      TableName: "yoyo",
-      Key: { primary_key: "2" },
-    });
-    console.log(res);
+      httpMethod: "GET",
+      isBase64Encoded: false,
+      path: "/1",
+      pathParameters: { id: "2" },
+      queryStringParameters: null,
+      multiValueQueryStringParameters: null,
+      stageVariables: null,
+      requestContext: {
+        accountId: "offlineContext_accountId",
+        apiId: "offlineContext_apiId",
+        authorizer: { jwt: [Object] },
+        domainName: "offlineContext_domainName",
+        domainPrefix: "offlineContext_domainPrefix",
+        httpMethod: "GET",
+        path: "/1",
+        protocol: "HTTP/1.1",
+        requestId: "offlineContext_resourceId",
+        routeKey: "GET /",
+        stage: "$default",
+        identity: {
+          accessKey: null,
+          accountId: null,
+          apiKey: null,
+          apiKeyId: null,
+          caller: null,
+          clientCert: null,
+          cognitoAuthenticationProvider: null,
+          cognitoAuthenticationType: null,
+          cognitoIdentityId: null,
+          cognitoIdentityPoolId: null,
+          principalOrgId: null,
+          sourceIp: "127.0.0.1",
+          user: null,
+          userAgent: null,
+          userArn: null,
+        },
+        requestTimeEpoch: 1662324596009,
+        resourceId: "offlineContext_resourceId",
+        resourcePath: "",
+      },
+      resource: "",
+    };
+
+    const res = await getTrail(getTrailMockEvent);
+    const trailBody = JSON.parse(res.body);
+    expect(trailBody[0]).toMatchObject({ id: "1" });
+    expect(trailBody[1]).toMatchObject({ id: "2" });
   });
 });

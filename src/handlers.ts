@@ -116,7 +116,7 @@ const handleError = (e: unknown) => {
   throw e;
 };
 
-export const getTrail: APIGatewayProxyHandler = async (
+export const getTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
