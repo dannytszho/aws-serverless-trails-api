@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1662419317152" clover="3.2.0">
-  <project timestamp="1662419317153" name="All files">
+<coverage generated="1662419395095" clover="3.2.0">
+  <project timestamp="1662419395096" name="All files">
     <metrics statements="51" coveredstatements="39" conditionals="9" coveredconditionals="2" methods="9" coveredmethods="7" elements="69" coveredelements="48" complexity="0" loc="51" ncloc="51" packages="1" files="2" classes="2"/>
     <file name="greeting.ts" path="C:\Users\DannyTsui\Coding\PP\aws-serverless-trails-api\src\greeting.ts">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
