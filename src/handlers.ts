@@ -34,7 +34,7 @@ export const createTrail = async (
           url: trail.url,
           imageUrl: trail.imageUrl,
           createdAt: timestamp,
-          updatedAt: timestamp,
+          // updatedAt: timestamp,
         },
       })
       .promise();
@@ -49,7 +49,7 @@ export const createTrail = async (
   }
 };
 
-export const getTrailsList: APIGatewayProxyHandler = async (
+export const getTrailsList = async (
   _event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const res = await dynamoDb
@@ -78,7 +78,7 @@ class HttpError extends Error {
   }
 }
 
-const fetchTrailById = async (id: string) => {
+export const fetchTrailById = async (id: string) => {
   const res = await dynamoDb
     .get({
       TableName: tableName!,
@@ -116,12 +116,11 @@ const handleError = (e: unknown) => {
   throw e;
 };
 
-export const getTrail: APIGatewayProxyHandler = async (
+export const getTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
     const id = event.pathParameters?.id as string;
-
     const res = await fetchTrailById(id);
 
     return {
@@ -134,7 +133,7 @@ export const getTrail: APIGatewayProxyHandler = async (
   }
 };
 
-export const updateTrail: APIGatewayProxyHandler = async (
+export const updateTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -166,7 +165,7 @@ export const updateTrail: APIGatewayProxyHandler = async (
   }
 };
 
-export const deleteTrail: APIGatewayProxyHandler = async (
+export const deleteTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -185,7 +184,7 @@ export const deleteTrail: APIGatewayProxyHandler = async (
 
     return {
       statusCode: 204,
-      body: "",
+      body: "Trail successfully deleted!",
     };
   } catch (e) {
     return handleError(e);

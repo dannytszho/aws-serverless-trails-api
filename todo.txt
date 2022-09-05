@@ -1,5 +1,14 @@
 1. Add Jest Unit test
     - = > 80% code coverage
 2. Set up Github action for CI/CD
+<<<<<<< HEAD
+3. Set up husky on push
+
+"lint-staged": 
+"yarn test watchAll=false --findRelatedTests --bail"
+
+Read CI/CD github action
+=======
 3. Set up husky on push---
 -
+>>>>>>> master
