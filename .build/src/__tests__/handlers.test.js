@@ -399,5 +399,8 @@ describe("Handle CRUD request", () => {
         expect(res.statusCode).toBe(204);
         expect(res.body).toBe("Trail successfully deleted!");
     });
+    // it('should throw error if id is wrong', async() => {
+    //   const res = handle
+    // })
 });
 //# sourceMappingURL=handlers.test.js.map
