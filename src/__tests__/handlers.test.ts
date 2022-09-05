@@ -438,5 +438,6 @@ describe("Handle CRUD request", () => {
 
     const res = await deleteTrail(deleteMockEvent);
     expect(res.statusCode).toBe(204);
+    expect(res.body).toBe("Trail successfully deleted!");
   });
 });
