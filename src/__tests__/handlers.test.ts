@@ -4,6 +4,7 @@ import {
   fetchTrailById,
   getTrail,
   getTrailsList,
+  updateTrail,
 } from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
 
@@ -288,5 +289,77 @@ describe("Handle CRUD request", () => {
     const trailBody = JSON.parse(res.body);
     expect(trailBody[0]).toMatchObject({ id: "1" });
     expect(trailBody[1]).toMatchObject({ id: "2" });
+  });
+  it("should update the correct trail", async () => {
+    let updateMockEvent: APIGatewayProxyEvent = {
+      body: "{\r\n" + '"Hi": "GG"\r\n' + "}",
+      headers: {
+        "content-type": "application/json",
+        "user-agent": "PostmanRuntime/7.29.2",
+        accept: "*/*",
+        "postman-token": "ebd968a9-0c66-4ed6-983c-9dda59e86496",
+        host: "localhost:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive",
+        "content-length": "704",
+      },
+      multiValueHeaders: {
+        "content-type": ["application/json"],
+        "user-agent": ["PostmanRuntime/7.29.2"],
+        accept: ["*/*"],
+        "postman-token": ["ebd968a9-0c66-4ed6-983c-9dda59e86496"],
+        host: ["localhost:3000"],
+        "accept-encoding": ["gzip, deflate, br"],
+        connection: ["keep-alive"],
+        "content-length": ["704"],
+      },
+
+      httpMethod: "PUT",
+      isBase64Encoded: false,
+      path: "/fd3b6254-ac28-4895-b342-13d562cb5372",
+      pathParameters: { id: "fd3b6254-ac28-4895-b342-13d562cb5372" },
+      queryStringParameters: null,
+      multiValueQueryStringParameters: null,
+      stageVariables: null,
+      requestContext: {
+        accountId: "offlineContext_accountId",
+        apiId: "offlineContext_apiId",
+        authorizer: { jwt: [Object] },
+        domainName: "offlineContext_domainName",
+        domainPrefix: "offlineContext_domainPrefix",
+        httpMethod: "PUT",
+        path: "/fd3b6254-ac28-4895-b342-13d562cb5372",
+        protocol: "HTTP/1.1",
+        requestId: "offlineContext_resourceId",
+        routeKey: "PUT /{id}",
+        stage: "$default",
+        identity: {
+          accessKey: null,
+          accountId: null,
+          apiKey: null,
+          apiKeyId: null,
+          caller: null,
+          clientCert: null,
+          cognitoAuthenticationProvider: null,
+          cognitoAuthenticationType: null,
+          cognitoIdentityId: null,
+          cognitoIdentityPoolId: null,
+          principalOrgId: null,
+          sourceIp: "127.0.0.1",
+          user: null,
+          userAgent: null,
+          userArn: null,
+        },
+        requestTimeEpoch: 1662347979879,
+        resourceId: "offlineContext_resourceId",
+        resourcePath: "",
+      },
+      resource: "",
+    };
+
+    const res = await updateTrail(updateMockEvent);
+    console.log(res);
+    expect(res.statusCode).toEqual(200);
+    expect(res.headers).toBe({ "content-type": "application/json" });
   });
 });

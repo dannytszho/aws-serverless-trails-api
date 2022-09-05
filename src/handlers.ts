@@ -6,6 +6,7 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 import { v4 } from "uuid";
+import { resolve } from "path/win32";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.DYNAMODB_TRAILS_TABLE;
@@ -121,7 +122,6 @@ export const getTrail = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const id = event.pathParameters?.id as string;
-
     const res = await fetchTrailById(id);
 
     return {
@@ -134,11 +134,13 @@ export const getTrail = async (
   }
 };
 
-export const updateTrail: APIGatewayProxyHandler = async (
+export const updateTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
+    console.log(event);
     const id = event.pathParameters?.id as string;
+    console.log(id);
 
     await fetchTrailById(id);
 

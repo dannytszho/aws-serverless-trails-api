@@ -119,7 +119,9 @@ exports.getTrail = getTrail;
 const updateTrail = async (event) => {
     var _a;
     try {
+        console.log(event);
         const id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
+        console.log(id);
         await (0, exports.fetchTrailById)(id);
         const timestamp = new Date().getTime();
         const trail = JSON.parse(event.body);
