@@ -292,7 +292,7 @@ describe("Handle CRUD request", () => {
   });
   it("should update the correct trail", async () => {
     let updateMockEvent: APIGatewayProxyEvent = {
-      body: "{\r\n" + '"Hi": "GG"\r\n' + "}",
+      body: "{\r\n" + '"HiHi": "GG"\r\n' + "}",
       headers: {
         "content-type": "application/json",
         "user-agent": "PostmanRuntime/7.29.2",
@@ -360,6 +360,7 @@ describe("Handle CRUD request", () => {
     const res = await updateTrail(updateMockEvent);
     console.log(res);
     expect(res.statusCode).toEqual(200);
-    expect(res.headers).toBe({ "content-type": "application/json" });
+    expect(res.headers).toStrictEqual({ "content-type": "application/json" });
+    expect(res.body).toStrictEqual('{"HiHi":"GG"}');
   });
 });
