@@ -358,7 +358,6 @@ describe("Handle CRUD request", () => {
     };
 
     const res = await updateTrail(updateMockEvent);
-    console.log(res);
     expect(res.statusCode).toEqual(200);
     expect(res.headers).toStrictEqual({ "content-type": "application/json" });
     expect(res.body).toStrictEqual('{"HiHi":"GG"}');

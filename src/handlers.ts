@@ -138,9 +138,7 @@ export const updateTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
-    console.log(event);
     const id = event.pathParameters?.id as string;
-    console.log(id);
 
     await fetchTrailById(id);
 
