@@ -185,7 +185,7 @@ export const deleteTrail = async (
 
     return {
       statusCode: 204,
-      body: "",
+      body: "Trail successfully deleted!",
     };
   } catch (e) {
     return handleError(e);

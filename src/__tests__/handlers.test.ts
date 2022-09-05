@@ -437,5 +437,6 @@ describe("Handle CRUD request", () => {
     };
 
     const res = await deleteTrail(deleteMockEvent);
+    expect(res.statusCode).toBe(204);
   });
 });

@@ -145,7 +145,6 @@ const deleteTrail = async (event) => {
     try {
         const id = (_a = event.pathParameters) === null || _a === void 0 ? void 0 : _a.id;
         await (0, exports.fetchTrailById)(id);
-        console.log(id);
         await dynamoDb
             .delete({
             TableName: tableName,
@@ -156,7 +155,7 @@ const deleteTrail = async (event) => {
             .promise();
         return {
             statusCode: 204,
-            body: "",
+            body: "Trail successfully deleted!",
         };
     }
     catch (e) {
