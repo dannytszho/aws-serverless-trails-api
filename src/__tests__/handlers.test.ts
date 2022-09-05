@@ -1,6 +1,7 @@
 import * as AWS from "aws-sdk";
 import {
   createTrail,
+  deleteTrail,
   fetchTrailById,
   getTrail,
   getTrailsList,
@@ -54,6 +55,11 @@ jest.mock("aws-sdk", () => {
                   ],
                 })
               ),
+            };
+          }),
+          delete: jest.fn().mockImplementation(() => {
+            return {
+              promise: jest.fn().mockImplementation(() => Promise.resolve({})),
             };
           }),
         };
@@ -361,5 +367,75 @@ describe("Handle CRUD request", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.headers).toStrictEqual({ "content-type": "application/json" });
     expect(res.body).toStrictEqual('{"HiHi":"GG"}');
+  });
+
+  it("should delete the correct trail", async () => {
+    let deleteMockEvent: APIGatewayProxyEvent = {
+      body: "{\r\n" + '"HiHi": "GG"\r\n' + "}",
+      headers: {
+        "content-type": "application/json",
+        "user-agent": "PostmanRuntime/7.29.2",
+        accept: "*/*",
+        "postman-token": "ebd968a9-0c66-4ed6-983c-9dda59e86496",
+        host: "localhost:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive",
+        "content-length": "704",
+      },
+      multiValueHeaders: {
+        "content-type": ["application/json"],
+        "user-agent": ["PostmanRuntime/7.29.2"],
+        accept: ["*/*"],
+        "postman-token": ["ebd968a9-0c66-4ed6-983c-9dda59e86496"],
+        host: ["localhost:3000"],
+        "accept-encoding": ["gzip, deflate, br"],
+        connection: ["keep-alive"],
+        "content-length": ["704"],
+      },
+
+      httpMethod: "PUT",
+      isBase64Encoded: false,
+      path: "/fd3b6254-ac28-4895-b342-13d562cb5372",
+      pathParameters: { id: "fd3b6254-ac28-4895-b342-13d562cb5372" },
+      queryStringParameters: null,
+      multiValueQueryStringParameters: null,
+      stageVariables: null,
+      requestContext: {
+        accountId: "offlineContext_accountId",
+        apiId: "offlineContext_apiId",
+        authorizer: { jwt: [Object] },
+        domainName: "offlineContext_domainName",
+        domainPrefix: "offlineContext_domainPrefix",
+        httpMethod: "DELETE /{id}",
+        path: "/fd3b6254-ac28-4895-b342-13d562cb5372",
+        protocol: "HTTP/1.1",
+        requestId: "offlineContext_resourceId",
+        routeKey: "DELETE /{id}",
+        stage: "$default",
+        identity: {
+          accessKey: null,
+          accountId: null,
+          apiKey: null,
+          apiKeyId: null,
+          caller: null,
+          clientCert: null,
+          cognitoAuthenticationProvider: null,
+          cognitoAuthenticationType: null,
+          cognitoIdentityId: null,
+          cognitoIdentityPoolId: null,
+          principalOrgId: null,
+          sourceIp: "127.0.0.1",
+          user: null,
+          userAgent: null,
+          userArn: null,
+        },
+        requestTimeEpoch: 1662347979879,
+        resourceId: "offlineContext_resourceId",
+        resourcePath: "",
+      },
+      resource: "",
+    };
+
+    const res = await deleteTrail(deleteMockEvent);
   });
 });

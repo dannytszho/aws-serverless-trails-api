@@ -166,7 +166,7 @@ export const updateTrail = async (
   }
 };
 
-export const deleteTrail: APIGatewayProxyHandler = async (
+export const deleteTrail = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
