@@ -6,7 +6,6 @@ import {
   APIGatewayProxyResult,
 } from "aws-lambda";
 import { v4 } from "uuid";
-import { resolve } from "path/win32";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.DYNAMODB_TRAILS_TABLE;

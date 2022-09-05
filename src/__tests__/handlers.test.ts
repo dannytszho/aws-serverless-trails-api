@@ -2,22 +2,11 @@ import * as AWS from "aws-sdk";
 import {
   createTrail,
   deleteTrail,
-  fetchTrailById,
   getTrail,
   getTrailsList,
   updateTrail,
 } from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
-
-const trailsData = {
-  id: "1",
-  name: "Angels Landing Trail",
-  length: "6.4 mi",
-  elevation: "1,240 ft",
-  duration: "Est. 3h 9m",
-};
-
-const get: jest.Mock = jest.fn();
 
 jest.mock("aws-sdk", () => {
   return {
@@ -68,8 +57,6 @@ jest.mock("aws-sdk", () => {
   };
 });
 const db = new AWS.DynamoDB.DocumentClient();
-
-// console.log(db.scan({ TableName: "" }).promise());
 
 describe("Handle CRUD request", () => {
   beforeEach(() => {
@@ -440,4 +427,7 @@ describe("Handle CRUD request", () => {
     expect(res.statusCode).toBe(204);
     expect(res.body).toBe("Trail successfully deleted!");
   });
+  // it('should throw error if id is wrong', async() => {
+  //   const res = handle
+  // })
 });
