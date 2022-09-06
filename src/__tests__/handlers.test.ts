@@ -7,6 +7,7 @@ import {
   updateTrail,
 } from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
+import { timeStamp } from "console";
 
 jest.mock("aws-sdk", () => {
   return {
@@ -427,7 +428,80 @@ describe("Handle CRUD request", () => {
     expect(res.statusCode).toBe(204);
     expect(res.body).toBe("Trail successfully deleted!");
   });
-  // it('should throw error if id is wrong', async() => {
-  //   const res = handle
-  // })
+  it("should throw error if data is not in JSON", async () => {
+    let createMockEvent: APIGatewayProxyEvent = {
+      body: "{\r\n" + '"Hi": "GG"\r\n' + "",
+      headers: {
+        "content-type": "application/json",
+        "user-agent": "PostmanRuntime/7.29.2",
+        accept: "*/*",
+        "postman-token": "56d7958c-bcd0-495f-a726-64166a9cb43c",
+        host: "localhost:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive",
+        "content-length": "704",
+      },
+      multiValueHeaders: {
+        "content-type": ["application/json"],
+        "user-agent": ["PostmanRuntime/7.29.2"],
+        accept: ["*/*"],
+        "postman-token": ["56d7958c-bcd0-495f-a726-64166a9cb43c"],
+        host: ["localhost:3000"],
+        "accept-encoding": ["gzip, deflate, br"],
+        connection: ["keep-alive"],
+        "content-length": ["704"],
+      },
+
+      httpMethod: "POST",
+      isBase64Encoded: false,
+      path: "",
+      pathParameters: null,
+      queryStringParameters: null,
+      multiValueQueryStringParameters: null,
+      stageVariables: null,
+      requestContext: {
+        accountId: "offlineContext_accountId",
+        apiId: "offlineContext_apiId",
+        authorizer: { jwt: [Object] },
+        domainName: "offlineContext_domainName",
+        domainPrefix: "offlineContext_domainPrefix",
+        httpMethod: "POST",
+        path: "/",
+        protocol: "HTTP/1.1",
+        requestId: "offlineContext_resourceId",
+        routeKey: "POST /",
+        stage: "$default",
+        identity: {
+          accessKey: null,
+          accountId: null,
+          apiKey: null,
+          apiKeyId: null,
+          caller: null,
+          clientCert: null,
+          cognitoAuthenticationProvider: null,
+          cognitoAuthenticationType: null,
+          cognitoIdentityId: null,
+          cognitoIdentityPoolId: null,
+          principalOrgId: null,
+          sourceIp: "127.0.0.1",
+          user: null,
+          userAgent: null,
+          userArn: null,
+        },
+        requestTimeEpoch: 1662062956709,
+        resourceId: "offlineContext_resourceId",
+        resourcePath: "",
+      },
+      resource: "",
+    };
+
+    const mockError = await createTrail(createMockEvent);
+    expect(mockError).toStrictEqual({
+      statusCode: 400,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        error: 'Invalid request body format: "Unexpected end of JSON input"',
+      }),
+    });
+  });
 });
