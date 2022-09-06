@@ -7,7 +7,6 @@ import {
   updateTrail,
 } from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { timeStamp } from "console";
 
 jest.mock("aws-sdk", () => {
   return {
@@ -26,15 +25,20 @@ jest.mock("aws-sdk", () => {
               ),
             };
           }),
-          scan: jest.fn().mockImplementation(() => {
-            return {
-              promise: jest
-                .fn()
-                .mockImplementation(() =>
-                  Promise.resolve({ Items: { Hi: "bb" } })
-                ),
-            };
-          }),
+          scan: jest
+            .fn()
+            .mockImplementationOnce(() => {
+              return {
+                promise: jest
+                  .fn()
+                  .mockResolvedValueOnce({ Items: { Hi: "bb" } }),
+              };
+            })
+            .mockImplementationOnce(() => {
+              return {
+                promise: jest.fn().mockResolvedValueOnce({ Count: 0 }),
+              };
+            }),
           get: jest.fn().mockImplementation(() => {
             return {
               promise: jest.fn().mockImplementation(() =>
@@ -137,7 +141,7 @@ describe("Handle CRUD request", () => {
     expect(db.put).toBeCalledTimes(1);
   });
 
-  it("should return the correct trails", async () => {
+  it("should return the correct trails List", async () => {
     let getListMockEvent: APIGatewayProxyEvent = {
       body: "{\r\n" + '"Hi": "GG"\r\n' + "}",
       headers: {
@@ -502,6 +506,78 @@ describe("Handle CRUD request", () => {
       body: JSON.stringify({
         error: 'Invalid request body format: "Unexpected end of JSON input"',
       }),
+    });
+  });
+  it("should throw error if NO trails in DB", async () => {
+    let getListMockEvent: APIGatewayProxyEvent = {
+      body: null,
+      headers: {
+        "content-type": "application/json",
+        "user-agent": "PostmanRuntime/7.29.2",
+        accept: "*/*",
+        "postman-token": "56d7958c-bcd0-495f-a726-64166a9cb43c",
+        host: "localhost:3000",
+        "accept-encoding": "gzip, deflate, br",
+        connection: "keep-alive",
+        "content-length": "704",
+      },
+      multiValueHeaders: {
+        "content-type": ["application/json"],
+        "user-agent": ["PostmanRuntime/7.29.2"],
+        accept: ["*/*"],
+        "postman-token": ["56d7958c-bcd0-495f-a726-64166a9cb43c"],
+        host: ["localhost:3000"],
+        "accept-encoding": ["gzip, deflate, br"],
+        connection: ["keep-alive"],
+        "content-length": ["704"],
+      },
+
+      httpMethod: "GET",
+      isBase64Encoded: false,
+      path: "",
+      pathParameters: null,
+      queryStringParameters: null,
+      multiValueQueryStringParameters: null,
+      stageVariables: null,
+      requestContext: {
+        accountId: "offlineContext_accountId",
+        apiId: "offlineContext_apiId",
+        authorizer: { jwt: [Object] },
+        domainName: "offlineContext_domainName",
+        domainPrefix: "offlineContext_domainPrefix",
+        httpMethod: "GET",
+        path: "/",
+        protocol: "HTTP/1.1",
+        requestId: "offlineContext_resourceId",
+        routeKey: "GET /",
+        stage: "$default",
+        identity: {
+          accessKey: null,
+          accountId: null,
+          apiKey: null,
+          apiKeyId: null,
+          caller: null,
+          clientCert: null,
+          cognitoAuthenticationProvider: null,
+          cognitoAuthenticationType: null,
+          cognitoIdentityId: null,
+          cognitoIdentityPoolId: null,
+          principalOrgId: null,
+          sourceIp: "127.0.0.1",
+          user: null,
+          userAgent: null,
+          userArn: null,
+        },
+        requestTimeEpoch: 1662013370292,
+        resourceId: "offlineContext_resourceId",
+        resourcePath: "",
+      },
+      resource: "",
+    };
+    const mockError = await getTrailsList(getListMockEvent);
+    expect(mockError).toStrictEqual({
+      statusCode: 404,
+      body: '{"error":"not found"}',
     });
   });
 });
