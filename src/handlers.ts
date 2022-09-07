@@ -1,10 +1,6 @@
 "use strict";
 import * as AWS from "aws-sdk";
-import {
-  APIGatewayProxyHandler,
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-} from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { v4 } from "uuid";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
