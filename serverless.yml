@@ -20,7 +20,17 @@ provider:
   environment:
     DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
 
+custom:
+  appSync:
+    name: ${self:service}-appsync-${sls:stage}
+    authenticationType: API_KEY
+    schema:
+      - src/graphql/schema.graphql
+
 functions:
+  graphqlHandler:
+    handler: src/graphql/handler.graphqlHandler
+
   getTrailsList:
     handler: src/handlers.getTrailsList
     events:

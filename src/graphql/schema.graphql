@@ -1,0 +1,21 @@
+type Trail {
+  primary_key: ID
+  name: String
+  length: String
+  elevation: String
+  duration: String
+  difficulty: String
+  rating: String
+  url: String
+  imageUrl: String
+  createdAt: String
+}
+
+type Query {
+  getAlltrails: [Trail!]
+  getTrail: Trail
+}
+
+schema {
+  query: Query
+}
