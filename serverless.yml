@@ -50,6 +50,11 @@ custom:
         field: updateTrail
         request: "update_trail/request.vtl"
         response: "common-item-response.vtl"
+      - dataSource: CustomerTable
+        type: Mutation
+        field: deleteTrail
+        request: "delete_trail/request.vtl"
+        response: "common-item-response.vtl"
 
 functions:
   graphqlHandler:

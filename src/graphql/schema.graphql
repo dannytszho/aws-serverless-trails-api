@@ -33,6 +33,7 @@ input TrailUpdateInput {
 type Mutation {
   createTrail(input: TrailCreateInput): Trail
   updateTrail(input: TrailUpdateInput): Trail
+  deleteTrail(primary_key: ID): Trail
 }
 
 type Query {
