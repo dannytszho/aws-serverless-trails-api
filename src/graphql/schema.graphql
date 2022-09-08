@@ -37,7 +37,7 @@ type Mutation {
 }
 
 type Query {
-  getAlltrails: [Trail!]
+  getAllTrails: [Trail!]
   getTrail(primary_key: ID): Trail
 }
 

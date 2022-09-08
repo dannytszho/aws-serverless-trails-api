@@ -55,6 +55,11 @@ custom:
         field: deleteTrail
         request: "delete_trail/request.vtl"
         response: "common-item-response.vtl"
+      - dataSource: CustomerTable
+        type: Query
+        field: getAllTrails
+        request: "get_allTrails/request.vtl"
+        response: "common-items-response.vtl"
 
 functions:
   graphqlHandler:
