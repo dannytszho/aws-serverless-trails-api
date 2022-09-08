@@ -11,6 +11,23 @@ type Trail {
   createdAt: String
 }
 
+input TrailCreateInput {
+  primary_key: ID
+  name: String
+  length: String
+  elevation: String
+  duration: String
+  difficulty: String
+  rating: String
+  url: String
+  imageUrl: String
+  createdAt: String
+}
+
+type Mutation {
+  createTrail(input: TrailCreateInput): Trail
+}
+
 type Query {
   getAlltrails: [Trail!]
   getTrail: Trail
@@ -18,4 +35,5 @@ type Query {
 
 schema {
   query: Query
+  mutation: Mutation
 }
