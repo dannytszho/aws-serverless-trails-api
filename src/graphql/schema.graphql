@@ -30,7 +30,7 @@ type Mutation {
 
 type Query {
   getAlltrails: [Trail!]
-  getTrail: Trail
+  getTrail(primary_key: ID): Trail
 }
 
 schema {

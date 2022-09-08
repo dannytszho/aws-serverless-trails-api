@@ -8,7 +8,8 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src --color",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules",
+    "gql": "sls graphql-playground"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.9",

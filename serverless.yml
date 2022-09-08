@@ -14,7 +14,7 @@ provider:
             - "dynamodb:DescribeTable"
             - "dynamodb:Query"
             - "dynamodb:PutItem"
-            - "dynamodb:Get*"
+            - "dynamodb:GetItem*"
             - "dynamodb:Scan*"
             - "dynamodb:UpdateItem"
             - "dynamodb:DeleteItem"
@@ -39,6 +39,11 @@ custom:
         type: Mutation
         field: createTrail
         request: "create_trail/request.vtl"
+        response: "common-item-response.vtl"
+      - dataSource: CustomerTable
+        type: Query
+        field: getTrail
+        request: "get_trail/request.vtl"
         response: "common-item-response.vtl"
 
 functions:
@@ -77,7 +82,18 @@ functions:
           method: delete
 
 resources:
-  - ${file(./resources/dynamo-table.yml)}
+  Resources:
+    CustomerTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: primary_key
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: primary_key
+            KeyType: HASH
+        TableName: ${self:service}-trailsTable-${sls:stage}
 
 plugins:
   - serverless-plugin-typescript
