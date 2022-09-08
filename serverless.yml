@@ -11,6 +11,8 @@ provider:
       statements:
         - Effect: "Allow"
           Action:
+            - "dynamodb:DescribeTable"
+            - "dynamodb:Query"
             - "dynamodb:PutItem"
             - "dynamodb:Get*"
             - "dynamodb:Scan*"
@@ -28,11 +30,10 @@ custom:
       - src/graphql/schema.graphql
     dataSources:
       - type: AMAZON_DYNAMODB
-        name: ${self:service}-trailsTable-${sls:stage}
+        name: CustomerTable
         description: DynamoDB Table for trails
         config:
-          tableName: ${self:service}-trailsTable-${sls:stage} # Where MyTable is a dynamodb table defined in Resources
-          serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] } # Where AppSyncDynamoDBServiceRole is an IAM role defined in Resources
+          tableName: ${self:provider.environment.DYNAMODB_TRAILS_TABLE} # Where MyTable is a dynamodb table defined in Resources
 
 functions:
   graphqlHandler:
@@ -42,7 +43,7 @@ functions:
     handler: src/handlers.getTrailsList
     events:
       - httpApi:
-          path: /
+          path: /rest
           method: get
   getTrail:
     handler: src/handlers.getTrail
@@ -70,18 +71,7 @@ functions:
           method: delete
 
 resources:
-  Resources:
-    CustomerTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: primary_key
-            AttributeType: S
-        BillingMode: PAY_PER_REQUEST
-        KeySchema:
-          - AttributeName: primary_key
-            KeyType: HASH
-        TableName: ${self:service}-trailsTable-${sls:stage}
+  - ${file(./resources/dynamo-table.yml)}
 
 plugins:
   - serverless-plugin-typescript
