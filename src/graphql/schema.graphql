@@ -9,6 +9,7 @@ type Trail {
   url: String
   imageUrl: String
   createdAt: String
+  updatedAt: String
 }
 
 input TrailCreateInput {
@@ -24,8 +25,14 @@ input TrailCreateInput {
   createdAt: String
 }
 
+input TrailUpdateInput {
+  primary_key: ID!
+  length: String
+}
+
 type Mutation {
   createTrail(input: TrailCreateInput): Trail
+  updateTrail(input: TrailUpdateInput): Trail
 }
 
 type Query {
