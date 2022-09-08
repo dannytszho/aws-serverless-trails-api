@@ -26,6 +26,13 @@ custom:
     authenticationType: API_KEY
     schema:
       - src/graphql/schema.graphql
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: ${self:service}-trailsTable-${sls:stage}
+        description: DynamoDB Table for trails
+        config:
+          tableName: ${self:service}-trailsTable-${sls:stage} # Where MyTable is a dynamodb table defined in Resources
+          serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] } # Where AppSyncDynamoDBServiceRole is an IAM role defined in Resources
 
 functions:
   graphqlHandler:

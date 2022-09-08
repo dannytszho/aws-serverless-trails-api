@@ -8,4 +8,5 @@ module.exports = {
       statements: 80,
     },
   },
+  collectCoverage: true,
 };

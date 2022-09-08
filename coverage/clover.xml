@@ -1,63 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1662520109464" clover="3.2.0">
-  <project timestamp="1662520109464" name="All files">
-    <metrics statements="51" coveredstatements="48" conditionals="9" coveredconditionals="7" methods="9" coveredmethods="9" elements="69" coveredelements="64" complexity="0" loc="51" ncloc="51" packages="1" files="2" classes="2"/>
-    <file name="greeting.ts" path="C:\Users\DannyTsui\Coding\PP\aws-serverless-trails-api\src\greeting.ts">
-      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <line num="1" count="1" type="stmt"/>
-      <line num="2" count="1" type="stmt"/>
-    </file>
-    <file name="handlers.ts" path="C:\Users\DannyTsui\Coding\PP\aws-serverless-trails-api\src\handlers.ts">
-      <metrics statements="49" coveredstatements="46" conditionals="9" coveredconditionals="7" methods="8" coveredmethods="8"/>
-      <line num="6" count="1" type="stmt"/>
-      <line num="7" count="1" type="stmt"/>
-      <line num="8" count="1" type="stmt"/>
-      <line num="12" count="1" type="stmt"/>
-      <line num="15" count="2" type="stmt"/>
-      <line num="16" count="2" type="stmt"/>
-      <line num="17" count="2" type="stmt"/>
-      <line num="19" count="1" type="stmt"/>
-      <line num="38" count="1" type="stmt"/>
-      <line num="44" count="1" type="stmt"/>
-      <line num="48" count="1" type="stmt"/>
-      <line num="51" count="2" type="stmt"/>
-      <line num="57" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="58" count="1" type="stmt"/>
-      <line num="64" count="1" type="stmt"/>
-      <line num="73" count="1" type="stmt"/>
-      <line num="77" count="1" type="stmt"/>
-      <line num="78" count="4" type="stmt"/>
-      <line num="87" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="88" count="1" type="stmt"/>
-      <line num="91" count="3" type="stmt"/>
-      <line num="94" count="1" type="stmt"/>
-      <line num="95" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="96" count="1" type="stmt"/>
-      <line num="104" count="1" type="cond" truecount="1" falsecount="1"/>
-      <line num="105" count="1" type="stmt"/>
-      <line num="112" count="0" type="stmt"/>
-      <line num="115" count="1" type="stmt"/>
-      <line num="118" count="2" type="stmt"/>
-      <line num="119" count="2" type="stmt"/>
-      <line num="120" count="2" type="stmt"/>
-      <line num="122" count="1" type="stmt"/>
-      <line num="128" count="1" type="stmt"/>
-      <line num="132" count="1" type="stmt"/>
-      <line num="135" count="1" type="stmt"/>
-      <line num="136" count="1" type="stmt"/>
-      <line num="138" count="1" type="stmt"/>
-      <line num="140" count="1" type="stmt"/>
-      <line num="141" count="1" type="stmt"/>
-      <line num="143" count="1" type="stmt"/>
-      <line num="154" count="1" type="stmt"/>
-      <line num="160" count="0" type="stmt"/>
-      <line num="164" count="1" type="stmt"/>
-      <line num="167" count="1" type="stmt"/>
-      <line num="168" count="1" type="stmt"/>
-      <line num="170" count="1" type="stmt"/>
-      <line num="172" count="1" type="stmt"/>
-      <line num="181" count="1" type="stmt"/>
-      <line num="186" count="0" type="stmt"/>
-    </file>
+<coverage generated="1662595524725" clover="3.2.0">
+  <project timestamp="1662595524726" name="All files">
+    <metrics statements="53" coveredstatements="48" conditionals="9" coveredconditionals="7" methods="10" coveredmethods="9" elements="72" coveredelements="64" complexity="0" loc="53" ncloc="53" packages="2" files="3" classes="3"/>
+    <package name="src">
+      <metrics statements="51" coveredstatements="48" conditionals="9" coveredconditionals="7" methods="9" coveredmethods="9"/>
+      <file name="greeting.ts" path="C:\Users\DannyTsui\Coding\PP\aws-serverless-trails-api\src\greeting.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+      </file>
+      <file name="handlers.ts" path="C:\Users\DannyTsui\Coding\PP\aws-serverless-trails-api\src\handlers.ts">
+        <metrics statements="49" coveredstatements="46" conditionals="9" coveredconditionals="7" methods="8" coveredmethods="8"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="57" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="64" count="1" type="stmt"/>
+        <line num="73" count="1" type="stmt"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="78" count="4" type="stmt"/>
+        <line num="87" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="88" count="1" type="stmt"/>
+        <line num="91" count="3" type="stmt"/>
+        <line num="94" count="1" type="stmt"/>
+        <line num="95" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="104" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="105" count="1" type="stmt"/>
+        <line num="112" count="0" type="stmt"/>
+        <line num="115" count="1" type="stmt"/>
+        <line num="118" count="2" type="stmt"/>
+        <line num="119" count="2" type="stmt"/>
+        <line num="120" count="2" type="stmt"/>
+        <line num="122" count="1" type="stmt"/>
+        <line num="128" count="1" type="stmt"/>
+        <line num="132" count="1" type="stmt"/>
+        <line num="135" count="1" type="stmt"/>
+        <line num="136" count="1" type="stmt"/>
+        <line num="138" count="1" type="stmt"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="141" count="1" type="stmt"/>
+        <line num="143" count="1" type="stmt"/>
+        <line num="154" count="1" type="stmt"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="164" count="1" type="stmt"/>
+        <line num="167" count="1" type="stmt"/>
+        <line num="168" count="1" type="stmt"/>
+        <line num="170" count="1" type="stmt"/>
+        <line num="172" count="1" type="stmt"/>
+        <line num="181" count="1" type="stmt"/>
+        <line num="186" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.graphql">
+      <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="handler.ts" path="C:\Users\DannyTsui\Coding\PP\aws-serverless-trails-api\src\graphql\handler.ts">
+        <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="2" count="0" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>
