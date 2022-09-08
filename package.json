@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "sls offline -s dev",
+    "deploy": "sls deploy",
     "test": "jest --verbose",
     "coverage": "jest --collect-coverage",
     "prepare": "husky install",
