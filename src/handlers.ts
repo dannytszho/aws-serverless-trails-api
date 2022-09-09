@@ -9,7 +9,7 @@ const headers = {
   "content-type": "application/json",
 };
 
-export const createTrail = async (
+export const createTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {

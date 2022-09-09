@@ -29,56 +29,36 @@ custom:
     schema:
       - src/graphql/schema.graphql
     dataSources:
-      - type: AMAZON_DYNAMODB
-        name: CustomerTable
-        description: DynamoDB Table for trails
+      - type: AWS_LAMBDA
+        name: createTrailFunction
         config:
-          tableName: ${self:provider.environment.DYNAMODB_TRAILS_TABLE} # Where MyTable is a dynamodb table defined in Resources
+          functionName: createTrail
     mappingTemplates:
-      - dataSource: CustomerTable
+      - dataSource: createTrailFunction
         type: Mutation
         field: createTrail
-        request: "create_trail/request.vtl"
-        response: "common-item-response.vtl"
-      - dataSource: CustomerTable
-        type: Query
-        field: getTrail
-        request: "get_trail/request.vtl"
-        response: "common-item-response.vtl"
-      - dataSource: CustomerTable
-        type: Mutation
-        field: updateTrail
-        request: "update_trail/request.vtl"
-        response: "common-item-response.vtl"
-      - dataSource: CustomerTable
-        type: Mutation
-        field: deleteTrail
-        request: "delete_trail/request.vtl"
-        response: "common-item-response.vtl"
-      - dataSource: CustomerTable
-        type: Query
-        field: getAllTrails
-        request: "get_allTrails/request.vtl"
-        response: "common-items-response.vtl"
+        request: false
+        response: false
 
 functions:
-  graphqlHandler:
-    handler: src/graphql/handler.graphqlHandler
-
+  createTrail:
+    handler: src/graphql/handler.createTrail
+    environment:
+      DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
   getTrailsList:
     handler: src/handlers.getTrailsList
     events:
       - httpApi:
           path: /rest
           method: get
-  getTrail:
+  getTrailres:
     handler: src/handlers.getTrail
     events:
       - httpApi:
           path: /{id}
           method: get
-  createTrail:
-    handler: src/handlers.createTrail
+  createTrail_rest:
+    handler: src/handlers.createTrail_rest
     events:
       - httpApi:
           path: /
