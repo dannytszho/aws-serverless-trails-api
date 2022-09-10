@@ -45,7 +45,7 @@ export const createTrail_rest = async (
   }
 };
 
-export const getTrailsList = async (
+export const getTrailsList_rest = async (
   _event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const res = await dynamoDb
@@ -112,7 +112,7 @@ const handleError = (e: unknown) => {
   throw e;
 };
 
-export const getTrail = async (
+export const getTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -129,7 +129,7 @@ export const getTrail = async (
   }
 };
 
-export const updateTrail = async (
+export const updateTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -161,7 +161,7 @@ export const updateTrail = async (
   }
 };
 
-export const deleteTrail = async (
+export const deleteTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {

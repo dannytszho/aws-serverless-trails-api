@@ -46,13 +46,13 @@ functions:
     environment:
       DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
   getTrailsList:
-    handler: src/handlers.getTrailsList
+    handler: src/handlers.getTrailsList_rest
     events:
       - httpApi:
-          path: /rest
+          path: /
           method: get
   getTrailres:
-    handler: src/handlers.getTrail
+    handler: src/handlers.getTrail_rest
     events:
       - httpApi:
           path: /{id}
@@ -64,13 +64,13 @@ functions:
           path: /
           method: post
   updateTrail:
-    handler: src/handlers.updateTrail
+    handler: src/handlers.updateTrail_rest
     events:
       - httpApi:
           path: /{id}
           method: put
   deleteTrail:
-    handler: src/handlers.deleteTrail
+    handler: src/handlers.deleteTrail_rest
     events:
       - httpApi:
           path: /{id}

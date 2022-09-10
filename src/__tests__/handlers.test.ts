@@ -1,10 +1,10 @@
 import * as AWS from "aws-sdk";
 import {
-  createTrail,
-  deleteTrail,
-  getTrail,
-  getTrailsList,
-  updateTrail,
+  createTrail_rest,
+  deleteTrail_rest,
+  getTrail_rest,
+  getTrailsList_rest,
+  updateTrail_rest,
 } from "../handlers";
 import { APIGatewayProxyEvent } from "aws-lambda";
 
@@ -143,7 +143,7 @@ describe("Handle CRUD request", () => {
 
     const createMock = await db.put({ TableName: "", Item: {} }).promise();
 
-    const res = await createTrail(createMockEvent);
+    const res = await createTrail_rest(createMockEvent);
     expect(createMock).toStrictEqual(res);
     expect(db.put).toBeCalledTimes(1);
   });
@@ -217,7 +217,7 @@ describe("Handle CRUD request", () => {
 
     const scanMock = await db.scan({ TableName: "" }).promise();
 
-    const res = await getTrailsList(getListMockEvent);
+    const res = await getTrailsList_rest(getListMockEvent);
     expect(JSON.parse(res.body)).toStrictEqual({ Hi: "bb" });
     expect(scanMock.Items).toStrictEqual({ Hi: "bb" });
     expect(db.scan).toBeCalledTimes(1);
@@ -288,7 +288,7 @@ describe("Handle CRUD request", () => {
       },
       resource: "",
     };
-    const mockError = await getTrail(getTrailMockEvent);
+    const mockError = await getTrail_rest(getTrailMockEvent);
     expect(mockError).toStrictEqual({
       statusCode: 404,
       body: '{"error":"not found"}',
@@ -363,7 +363,7 @@ describe("Handle CRUD request", () => {
       resource: "",
     };
 
-    const res = await getTrail(getTrailMockEvent);
+    const res = await getTrail_rest(getTrailMockEvent);
     const trailBody = JSON.parse(res.body);
     expect(trailBody[0]).toMatchObject({ id: "1" });
     expect(trailBody[1]).toMatchObject({ id: "2" });
@@ -435,7 +435,7 @@ describe("Handle CRUD request", () => {
       resource: "",
     };
 
-    const res = await updateTrail(updateMockEvent);
+    const res = await updateTrail_rest(updateMockEvent);
     expect(res.statusCode).toEqual(200);
     expect(res.headers).toStrictEqual({ "content-type": "application/json" });
     expect(res.body).toStrictEqual('{"HiHi":"GG"}');
@@ -508,7 +508,7 @@ describe("Handle CRUD request", () => {
       resource: "",
     };
 
-    const res = await deleteTrail(deleteMockEvent);
+    const res = await deleteTrail_rest(deleteMockEvent);
     expect(res.statusCode).toBe(204);
     expect(res.body).toBe("Trail successfully deleted!");
   });
@@ -579,7 +579,7 @@ describe("Handle CRUD request", () => {
       resource: "",
     };
 
-    const mockError = await createTrail(createMockEvent);
+    const mockError = await createTrail_rest(createMockEvent);
     expect(mockError).toStrictEqual({
       statusCode: 400,
       headers: { "content-type": "application/json" },
@@ -654,7 +654,7 @@ describe("Handle CRUD request", () => {
       },
       resource: "",
     };
-    const mockError = await getTrailsList(getListMockEvent);
+    const mockError = await getTrailsList_rest(getListMockEvent);
     expect(mockError).toStrictEqual({
       statusCode: 404,
       body: '{"error":"not found"}',

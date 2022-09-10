@@ -1,22 +1,17 @@
 import * as AWS from "aws-sdk";
-import { v4 } from "uuid";
+import { PutItemInput } from "aws-sdk/clients/dynamodb";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.DYNAMODB_TRAILS_TABLE;
-const headers = {
-  "content-type": "application/json",
-};
 
 export const createTrail = async event => {
-  const timestamp = new Date().getTime();
-  const trail = event.arguments.input;
-  console.log(trail);
+  try {
+    const trail = event.arguments.input;
 
-  await dynamoDb
-    .put({
+    const params: PutItemInput = {
       TableName: tableName!,
       Item: {
-        primary_key: v4(),
+        primary_key: trail.primary_key,
         name: trail.name,
         length: trail.length,
         elevation: trail.elevation,
@@ -25,15 +20,13 @@ export const createTrail = async event => {
         rating: trail.rating,
         url: trail.url,
         imageUrl: trail.imageUrl,
-        createdAt: timestamp,
-        // updatedAt: timestamp,
+        createdAt: trail.createdAt,
       },
-    })
-    .promise();
+    };
+    await dynamoDb.put(params).promise();
 
-  return {
-    statusCode: 201,
-    headers,
-    body: JSON.stringify(trail),
-  };
+    return trail;
+  } catch (e) {
+    return e;
+  }
 };
