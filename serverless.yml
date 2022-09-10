@@ -11,8 +11,10 @@ provider:
       statements:
         - Effect: "Allow"
           Action:
+            - "dynamodb:DescribeTable"
+            - "dynamodb:Query"
             - "dynamodb:PutItem"
-            - "dynamodb:Get*"
+            - "dynamodb:GetItem*"
             - "dynamodb:Scan*"
             - "dynamodb:UpdateItem"
             - "dynamodb:DeleteItem"
@@ -20,33 +22,55 @@ provider:
   environment:
     DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
 
+custom:
+  appSync:
+    name: ${self:service}-appsync-${sls:stage}
+    authenticationType: API_KEY
+    schema:
+      - src/graphql/schema.graphql
+    dataSources:
+      - type: AWS_LAMBDA
+        name: createTrailFunction
+        config:
+          functionName: createTrail
+    mappingTemplates:
+      - dataSource: createTrailFunction
+        type: Mutation
+        field: createTrail
+        request: false
+        response: false
+
 functions:
+  createTrail:
+    handler: src/graphql/handler.createTrail
+    environment:
+      DYNAMODB_TRAILS_TABLE: ${self:service}-trailsTable-${sls:stage}
   getTrailsList:
-    handler: src/handlers.getTrailsList
+    handler: src/handlers.getTrailsList_rest
     events:
       - httpApi:
           path: /
           method: get
-  getTrail:
-    handler: src/handlers.getTrail
+  getTrailres:
+    handler: src/handlers.getTrail_rest
     events:
       - httpApi:
           path: /{id}
           method: get
-  createTrail:
-    handler: src/handlers.createTrail
+  createTrail_rest:
+    handler: src/handlers.createTrail_rest
     events:
       - httpApi:
           path: /
           method: post
   updateTrail:
-    handler: src/handlers.updateTrail
+    handler: src/handlers.updateTrail_rest
     events:
       - httpApi:
           path: /{id}
           method: put
   deleteTrail:
-    handler: src/handlers.deleteTrail
+    handler: src/handlers.deleteTrail_rest
     events:
       - httpApi:
           path: /{id}
@@ -69,3 +93,4 @@ resources:
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-appsync-plugin

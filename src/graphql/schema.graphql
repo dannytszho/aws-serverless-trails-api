@@ -1,0 +1,47 @@
+type Trail {
+  primary_key: ID
+  name: String
+  length: String
+  elevation: String
+  duration: String
+  difficulty: String
+  rating: String
+  url: String
+  imageUrl: String
+  createdAt: String
+  updatedAt: String
+}
+
+input TrailCreateInput {
+  primary_key: ID
+  name: String
+  length: String
+  elevation: String
+  duration: String
+  difficulty: String
+  rating: String
+  url: String
+  imageUrl: String
+  createdAt: String
+}
+
+input TrailUpdateInput {
+  primary_key: ID!
+  length: String
+}
+
+type Mutation {
+  createTrail(input: TrailCreateInput): Trail
+  updateTrail(input: TrailUpdateInput): Trail
+  deleteTrail(primary_key: ID): Trail
+}
+
+type Query {
+  getAllTrails: [Trail!]
+  getTrail(primary_key: ID): Trail
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

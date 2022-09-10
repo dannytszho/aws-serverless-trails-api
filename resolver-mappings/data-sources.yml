@@ -1,0 +1,5 @@
+- type: AMAZON_DYNAMODB
+  name: CustomerTable
+  description: DynamoDB Table for trails
+  config:
+    tableName: ${self:provider.environment.DYNAMODB_TRAILS_TABLE} # Where MyTable is a dynamodb table defined in Resources

@@ -1,10 +1,6 @@
 "use strict";
 import * as AWS from "aws-sdk";
-import {
-  APIGatewayProxyHandler,
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-} from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { v4 } from "uuid";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -13,7 +9,7 @@ const headers = {
   "content-type": "application/json",
 };
 
-export const createTrail = async (
+export const createTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -49,7 +45,7 @@ export const createTrail = async (
   }
 };
 
-export const getTrailsList = async (
+export const getTrailsList_rest = async (
   _event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const res = await dynamoDb
@@ -116,7 +112,7 @@ const handleError = (e: unknown) => {
   throw e;
 };
 
-export const getTrail = async (
+export const getTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -133,7 +129,7 @@ export const getTrail = async (
   }
 };
 
-export const updateTrail = async (
+export const updateTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -165,7 +161,7 @@ export const updateTrail = async (
   }
 };
 
-export const deleteTrail = async (
+export const deleteTrail_rest = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
